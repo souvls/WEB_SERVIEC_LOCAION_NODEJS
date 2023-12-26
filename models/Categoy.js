@@ -1,8 +1,10 @@
 const mongoose = require('mongoose')
 const condb = require('../config/LoactionDB');
 //design schema
+
+
 let cgrSchema = mongoose.Schema({
-    Name:String
+    Name: String
 });
 
 //create model

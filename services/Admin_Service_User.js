@@ -15,6 +15,34 @@ const upload = multer({
     storage:storage
 })
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       required:
+ *       properties:
+ *         _id:
+ *           type: objectId
+ *           description: Tự động tạo _id của người dùng
+ *         fullname:
+ *           type: string
+ *           description: Họ và tên người dùng
+ *         email:
+ *           type: string
+ *         password:
+ *           type: string
+ *           description: Mật khẩu 
+ *         avatar:
+ *           type: string
+ *           description: Ảnh đại diện của người dùng
+ *         role:
+ *           type: boolean
+ *           description: Vai trò của người dùng ['user', 'admin']
+ */
+
+
 router.get("/auth/user/all",async (req,res)=>{
     const User = require('../models/User');
     try{

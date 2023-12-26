@@ -1,10 +1,80 @@
 const express = require('express');
 const router = express.Router();
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Category:
+ *       type: object
+ *       required:
+ *         - name
+ *       properties:
+ *         _id:
+ *           type: objectId
+ *           description: Tự động tạo _id của địa điểm
+ *         name:
+ *           type: string
+ *           description: Tên loại hình du lịch
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Location:
+ *       type: object
+ *       required:
+ *       properties:
+ *         _id:
+ *           type: objectId
+ *           description: Tự động tạo _id của địa điểm
+ *         name:
+ *           type: string
+ *           description: Tên địa điểm
+ *         desc:
+ *           type: string
+ *           description: Mô tả địa điểm
+ *         address:
+ *           type: string
+ *           description: Địa chỉ của địa điểm
+ *         latitude:
+ *           type: number
+ *           description: Vĩ độ
+ *         longitude:
+ *           type: number
+ *           description: Kinh độ
+ *         rating: 
+ *           type: number
+ *           description: Đánh giá
+ *         category_id: 
+ *           type: objectId
+ *           description: Loại du lịch
+ *         img_name:
+ *           type: array
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Img_location:
+ *       type: object
+ *       required:
+ *       properties:
+ *         _id:
+ *           type: objectId
+ *           description: Tự động tạo _id hình ảnh địa điểm
+ *         location_id:
+ *           type: objectId
+ *         name:
+ *           type: string
+ */
+
 
 // ============== start Category ======================
-//Liêt ke danh sách địa điểm du lịch
-router.get("/auth/categorys",async (req,res)=>{
+//Liêt kê danh sách địa điểm du lịch
+router.get("/auth/categories",async (req,res)=>{
     const Category = require('../models/Categoy');
     await Category.find().then((result)=>{
         console.log('=> admin get all category');
@@ -12,7 +82,9 @@ router.get("/auth/categorys",async (req,res)=>{
     })
 })
 
+
 //thêm loại địa điểm du lịch mới
+
 router.post("/auth/category",async (req,res)=>{
     const Category = require('../models/Categoy');
     const Name = req.body.Name
@@ -36,6 +108,7 @@ router.post("/auth/category",async (req,res)=>{
 })
 
 //xóa loại địa điểm du lịch
+
 router.delete("/auth/category",async (req,res)=>{
     const Category = require('../models/Categoy');
     const id = req.body.id;
@@ -77,7 +150,6 @@ router.get("/auth/location",async (req,res)=>{
     }).catch(err=>{
         console.log(err);
     })
-
 })
 router.delete("auth/location",async (req,res)=>{
     const Location = require('../models/Location');

@@ -4,7 +4,7 @@ const condb = require('../config/Comment');
 let commentSchema = mongoose.Schema({
     UserID:{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'uers'
+        ref: 'users'
     },
     LocationID:{
         type: mongoose.Schema.Types.ObjectId,

@@ -17,7 +17,7 @@ const upload = multer({storage});
 
 // ================ start category ====================
 //Liêt ke danh sách địa điểm du lịch
-router.get("/categorys",async (req,res)=>{
+router.get("/categories",async (req,res)=>{
     const Category = require('../models/Categoy');
     await Category.find().then((result)=>{
         console.log('=> get all category');
