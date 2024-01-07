@@ -18,10 +18,10 @@ const upload = multer({storage});
 // ================ start category ====================
 //Liêt ke danh sách địa điểm du lịch
 router.get("/categories",async (req,res)=>{
-    const Category = require('../models/Categoy');
+    const Category = require('../models/Category');
     await Category.find().then((result)=>{
         console.log('=> get all category');
-        res.status(200).json({'msg':'Danh sách loại hình du lịch','category':result})
+        res.status(200).json({'msg':'Danh sách loại hình du lịch','categories':result})
     })
 })
 // ================ end category ====================
@@ -32,7 +32,7 @@ router.post("/user/locations",token.jwtValidate,async (req,res)=>{
     const id = req.body.id;
     console.log(id);
     const Location = require('../models/Location');
-    const Category = require('../models/Categoy');
+    const Category = require('../models/Category');
     await Location.find({UserID:id}).populate("Category_id")
     .then((location)=>{
         console.log('=> find Location by ID');
@@ -92,7 +92,7 @@ router.post("/user/comment",token.jwtValidate,(req,res)=>{
 
 router.post("/location",(req,res)=>{
     const Location = require('../models/Location');
-    const Category = require('../models/Categoy');
+    const Category = require('../models/Category');
     const key = req.body.key;
     Location.find({ Name: { $regex: key, $options: "i" } }).populate("Category_id")
     .then((result)=>{

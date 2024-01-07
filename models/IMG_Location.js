@@ -2,11 +2,11 @@ const mongoose = require('mongoose')
 const condb = require('../config/LoactionDB');
 //design schema
 let imgSchema = mongoose.Schema({
-    LocationID:{
+    location_id:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'users'
     },
-    Name:String
+    name:String
 });
 
 //create model

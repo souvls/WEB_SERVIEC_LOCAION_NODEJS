@@ -25,10 +25,12 @@ const app = express();
 app.use(morgan('dev'));
 app.use(cors());
 app.use(bodyParser.json({limit:'10mb'}));
-
+app.use(express.static('uploads'));
 app.use(Authentication_Service);
 //Service for user
 app.use(Service_for_User);
+
+
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 app.use(token.jwtValidate,isAdmin,Admin_Service_Location);
 app.use(token.jwtValidate,isAdmin,Admin_Service_User);

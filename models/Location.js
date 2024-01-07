@@ -2,22 +2,22 @@ const mongoose = require('mongoose')
 const condb = require('../config/LoactionDB');
 //design schema
 let locationSchema = mongoose.Schema({
-    UserID:{
+    user_id:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'users'
     },
-    Name:String,
-    DESC:String,
-    Address:String,
-    Latitude:Number,
-    Longitude:Number,
-    Status:Boolean,
-    Rating:Number,
-    Category_id:{
+    name:String,
+    desc:String,
+    address:String,
+    latitude:Number,
+    longitude:Number,
+    status:Boolean,
+    rating:Number,
+    category_id:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'category'
     },
-    ImgName:Array
+    img_name:Array
 });
 
 //create model

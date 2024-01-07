@@ -75,10 +75,10 @@ const router = express.Router();
 // ============== start Category ======================
 //Liêt kê danh sách địa điểm du lịch
 router.get("/auth/categories",async (req,res)=>{
-    const Category = require('../models/Categoy');
+    const Category = require('../models/Category');
     await Category.find().then((result)=>{
         console.log('=> admin get all category');
-        res.status(200).json({'msg':'Danh sách loại hình du lịch','category':result})
+        res.status(200).json({'msg':'Danh sách loại hình du lịch','categories':result})
     })
 })
 
@@ -86,13 +86,13 @@ router.get("/auth/categories",async (req,res)=>{
 //thêm loại địa điểm du lịch mới
 
 router.post("/auth/category",async (req,res)=>{
-    const Category = require('../models/Categoy');
-    const Name = req.body.Name
+    const Category = require('../models/Category');
+    const Name = req.body.name
 
-    await Category.findOne({Name:Name}).then(async (result)=>{
+    await Category.findOne({name:Name}).then(async (result)=>{
         if(!result){
             NewCategory = new Category({
-                Name:Name
+                name:Name
             })
             await NewCategory.save().then((result)=>{
                 console.log('=> admin insert new category');
@@ -109,9 +109,9 @@ router.post("/auth/category",async (req,res)=>{
 
 //xóa loại địa điểm du lịch
 
-router.delete("/auth/category",async (req,res)=>{
-    const Category = require('../models/Categoy');
-    const id = req.body.id;
+router.delete("/auth/category/:id",async (req,res)=>{
+    const Category = require('../models/Category');
+    const id = req.params.id;
     await Category.findByIdAndDelete(id)
     .then((result)=>{
         console.log('=> admin, delete category id:'+id);
@@ -127,7 +127,7 @@ router.delete("/auth/category",async (req,res)=>{
 //all
 router.get("/auth/locations",async (req,res)=>{
     const Location = require('../models/Location');
-    const Category = require('../models/Categoy');
+    const Category = require('../models/Category');
     const id = req.body.id;
     await Location.find(id).populate("Category_id")
     .then((location)=>{
@@ -139,10 +139,10 @@ router.get("/auth/locations",async (req,res)=>{
 })
 
 //find by id
-router.get("/auth/location",async (req,res)=>{
+router.get("/auth/location/:id",async (req,res)=>{
     const Location = require('../models/Location');
-    const Category = require('../models/Categoy');
-    const id = req.body.id;
+    const Category = require('../models/Category');
+    const id = req.params.id;
     await Location.findById(id).populate("Category_id")
     .then((location)=>{
         console.log('=> find Location by ID');
@@ -151,9 +151,9 @@ router.get("/auth/location",async (req,res)=>{
         console.log(err);
     })
 })
-router.delete("auth/location",async (req,res)=>{
+router.delete("auth/location/:id",async (req,res)=>{
     const Location = require('../models/Location');
-    const id = req.body.id
+    const id = req.params.id
     await Location.findByIdAndDelete({ _id: id }).then(()=>{
         console.log('=> Delete Location by ID');
         res.status(200).json({ 'msg': 'xóa location ID:' + id})

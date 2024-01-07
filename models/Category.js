@@ -4,7 +4,7 @@ const condb = require('../config/LoactionDB');
 
 
 let cgrSchema = mongoose.Schema({
-    Name: String
+    name: String
 });
 
 //create model

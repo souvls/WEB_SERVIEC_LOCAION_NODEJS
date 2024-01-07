@@ -2,17 +2,17 @@ const mongoose = require('mongoose')
 const condb = require('../config/Comment');
 //design schema
 let commentSchema = mongoose.Schema({
-    UserID:{
+    user_id:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'users'
     },
-    LocationID:{
+    location_id:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'location'
     },
-    Message: String,
-    Create_at: Date,
-    Status: Boolean
+    message: String,
+    create_at: Date,
+    status: Boolean
 });
 
 //create model

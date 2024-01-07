@@ -90,7 +90,7 @@ router.post("/auth/user/email",async (req,res)=>{
     const User = require('../models/User');
     const email = req.body.email
     try{
-        await User.findOne({'Email':email}).then(User=>{
+        await User.findOne({'email':email}).then(User=>{
             if(User){
                 console.log('=> admin find user by email');
                 res.status(200).json({msg:'tìm người dùng bằng Email',user:User});

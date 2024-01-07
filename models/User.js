@@ -2,11 +2,11 @@ const mongoose = require('mongoose')
 const condb = require('../config/UserDB')
 
 let userSchema = mongoose.Schema({
-    Fullname:String,
-    Email:String,
-    Password:String,
-    Avatar:String,
-    Role:Boolean
+    fullname:String,
+    email:String,
+    password:String,
+    avatar:String,
+    role:Boolean
 });
 
 let User = condb.model("Users",userSchema);
