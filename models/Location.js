@@ -13,10 +13,12 @@ let locationSchema = mongoose.Schema({
     longitude:Number,
     status:Boolean,
     rating:Number,
-    category_id:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'category'
-    },
+    categories:[
+        {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'category'
+        }
+    ],
     img_name:Array
 });
 

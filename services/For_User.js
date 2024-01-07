@@ -27,16 +27,16 @@ router.get("/categories",async (req,res)=>{
 // ================ end category ====================
 
 
-//========= start Loaction ======================
+//========= start Location ======================
 router.post("/user/locations",token.jwtValidate,async (req,res)=>{
     const id = req.body.id;
     console.log(id);
     const Location = require('../models/Location');
     const Category = require('../models/Category');
-    await Location.find({UserID:id}).populate("Category_id")
+    await Location.find({user_id:id}).populate("category_id")
     .then((location)=>{
         console.log('=> find Location by ID');
-        res.status(200).json({'msg':'Danh sách nơi du lịch của ID:','Location':location})  
+        res.status(200).json({'msg':'Danh sách nơi du lịch của ID:','location':location})  
     }).catch(err=>{
         console.log(err);
         console.log('=> ID not exits');
@@ -46,26 +46,30 @@ router.post("/user/locations",token.jwtValidate,async (req,res)=>{
 
 router.post("/user/upload",token.jwtValidate,upload.array('images',6),async (req,res)=>{
     const Location = require('../models/Location');
-    const {UserID,Name,DESC,Address,Latitude,Longitude,Category_id } = req.body
+    const {user_id,name,desc,address,latitude,longitude,categories } = req.body
     var imgs = [];
     for(var i = 0; i < req.files.length ; i++){
         imgs.push(req.files[i].filename);
     }
+
+     // Chuyển đổi trường categories từ chuỗi JSON thành mảng
+    const parsedCategories = JSON.parse(categories);
+
     //lưu nơi du lịch
     const newlocation = new Location({
-        UserID:UserID,
-        Name:Name,
-        DESC:DESC,
-        Address:Address,
-        Latitude:Latitude,
-        Longitude:Longitude,
-        Status:false,
-        Rating:0,
-        Category_id:Category_id,
-        ImgName:imgs
+        user_id:user_id,
+        name:name,
+        desc:desc,
+        address:address,
+        latitude:latitude,
+        longitude:longitude,
+        status:false,
+        rating:0,
+        categories: parsedCategories,
+        img_name:imgs
     })
     await newlocation.save().then(async location=>{
-        console.log('=> user id:'+UserID+' insert new location');
+        console.log('=> user id:'+user_id+' insert new location');
         res.status(200).json({'msg':'thêm nơi du lich thành công','result':location})
     }).catch(err=>{
         console.log(err);
@@ -73,16 +77,16 @@ router.post("/user/upload",token.jwtValidate,upload.array('images',6),async (req
 })
 //========= end Loaction ======================
 
-//========= start coment ======================
+//========= start comment ======================
 router.post("/user/comment",token.jwtValidate,(req,res)=>{
     const Comemnt = require('../models/Comment');
-    const {UserID,LocationID,Message} = req.body
+    const {user_id,location_id,message} = req.body
     const NewComemnt = new Comemnt({
-        UserID:UserID,
-        LocationID:LocationID,
-        Message:Message,
-        Create_at:Date.now(),
-        Status:true
+        user_id:user_id,
+        location_id:location_id,
+        message:message,
+        create_at:Date.now(),
+        status:true
     })
     NewComemnt.save().then(()=>{
         console.log('=> user create new comment');
@@ -94,7 +98,7 @@ router.post("/location",(req,res)=>{
     const Location = require('../models/Location');
     const Category = require('../models/Category');
     const key = req.body.key;
-    Location.find({ Name: { $regex: key, $options: "i" } }).populate("Category_id")
+    Location.find({ name: { $regex: key, $options: "i" } }).populate("category_id")
     .then((result)=>{
         console.log('=> Search location');
         res.status(200).json({'msg':'tìm location','location':result})
