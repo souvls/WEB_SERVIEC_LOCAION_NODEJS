@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const isAdmin = async (req,res,next)=>{
-    await User.findOne({Email:req.data.email}).then((result)=>{
-        if(result.Role === true){
+    await User.findOne({email:req.data.email}).then((result)=>{
+        if(result.role === true){
             return next();
         }else{
             console.log('=> not admin');

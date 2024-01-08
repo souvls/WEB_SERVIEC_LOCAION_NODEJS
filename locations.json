@@ -1,0 +1,264 @@
+[{
+  "_id": {
+    "$oid": "659b570a5506896338af0623"
+  },
+  "user_id": {
+    "$oid": "659b55d35506896338af060f"
+  },
+  "name": "NyNy Food & Tea Quy Nhơn",
+  "desc": "Chuyên các box đồ Hàn và trà trái cây tươi, ở đây có ship nữa nhen. Mình ghiền ăn cơm gà, miến trộn, kimpab thịt nướng ở đây nè 🤤",
+  "address": "📍81 Hai Bà Trưng, Quy Nhơn",
+  "latitude": 0,
+  "longitude": 0,
+  "status": false,
+  "rating": 0,
+  "categories": [
+    {
+      "$oid": "659a7d826ec33e95bc39e95e"
+    }
+  ],
+  "img_name": [
+    "1704679178647.jpg"
+  ],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "659b57525506896338af0629"
+  },
+  "user_id": {
+    "$oid": "659b55d35506896338af060f"
+  },
+  "name": "Ăn vặt BiBi Quy Nhơn",
+  "desc": "⏰ 16:00-22:00",
+  "address": "📍 204 Lê Lợi nối dài, Quy Nhơn",
+  "latitude": 0,
+  "longitude": 0,
+  "status": false,
+  "rating": 0,
+  "categories": [
+    {
+      "$oid": "659a7d826ec33e95bc39e95e"
+    }
+  ],
+  "img_name": [
+    "1704679250661.jpg"
+  ],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "659b577e5506896338af062f"
+  },
+  "user_id": {
+    "$oid": "659b55d35506896338af060f"
+  },
+  "name": "Quán lẩu Laly ",
+  "desc": "⏰ 10:00-22:00",
+  "address": "📍 63B Nguyễn Thị Minh Khai, Quy Nhơn",
+  "latitude": 0,
+  "longitude": 0,
+  "status": false,
+  "rating": 0,
+  "categories": [
+    {
+      "$oid": "659a7d826ec33e95bc39e95e"
+    }
+  ],
+  "img_name": [
+    "1704679294305.jpg"
+  ],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "659b579d5506896338af0635"
+  },
+  "user_id": {
+    "$oid": "659b55d35506896338af060f"
+  },
+  "name": "Tokbokki Quy Nhơn",
+  "desc": "⏰ 15:00-22:00",
+  "address": "📍 81 Nguyễn Nhạc, Quy Nhơn",
+  "latitude": 0,
+  "longitude": 0,
+  "status": false,
+  "rating": 0,
+  "categories": [
+    {
+      "$oid": "659a7d826ec33e95bc39e95e"
+    }
+  ],
+  "img_name": [
+    "1704679325723.jpg"
+  ],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "659b57ca5506896338af063b"
+  },
+  "user_id": {
+    "$oid": "659b55d35506896338af060f"
+  },
+  "name": "Leo Korean",
+  "desc": "⏰ 10:00-22:00",
+  "address": "📍 234 Nguyễn Thị Định, Quy Nhơn",
+  "latitude": 0,
+  "longitude": 0,
+  "status": false,
+  "rating": 0,
+  "categories": [
+    {
+      "$oid": "659a7d826ec33e95bc39e95e"
+    }
+  ],
+  "img_name": [
+    "1704679370848.jpg"
+  ],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "659b57f25506896338af0641"
+  },
+  "user_id": {
+    "$oid": "659b55d35506896338af060f"
+  },
+  "name": "Pepa’s kitchen",
+  "desc": "⏰ 15:00-22:00",
+  "address": "📍 245 Nguyễn Thị Minh Khai, Quy Nhơn",
+  "latitude": 0,
+  "longitude": 0,
+  "status": false,
+  "rating": 0,
+  "categories": [
+    {
+      "$oid": "659a7d826ec33e95bc39e95e"
+    }
+  ],
+  "img_name": [
+    "1704679410349.jpg"
+  ],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "659b58265506896338af0647"
+  },
+  "user_id": {
+    "$oid": "659b55d35506896338af060f"
+  },
+  "name": "Dookki Quy Nhơn",
+  "desc": "⏰ 10:00-22:00",
+  "address": "📍 Tầng 2 FLC Sea Tower Quy Nhơn",
+  "latitude": 0,
+  "longitude": 0,
+  "status": false,
+  "rating": 0,
+  "categories": [
+    {
+      "$oid": "659a7d826ec33e95bc39e95e"
+    }
+  ],
+  "img_name": [
+    "1704679462762.jpg"
+  ],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "659b58615506896338af064d"
+  },
+  "user_id": {
+    "$oid": "659b55d35506896338af060f"
+  },
+  "name": "Spicybox Quy Nhơn",
+  "desc": "⏰ 10:00-22:00",
+  "address": "📍 Tầng Trệt Go! Quy Nhơn",
+  "latitude": 0,
+  "longitude": 0,
+  "status": false,
+  "rating": 0,
+  "categories": [
+    {
+      "$oid": "659a7d826ec33e95bc39e95e"
+    }
+  ],
+  "img_name": [
+    "1704679521646.jpg"
+  ],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "659b587b5506896338af0653"
+  },
+  "user_id": {
+    "$oid": "659b55d35506896338af060f"
+  },
+  "name": "Pizza Go Quy Nhơn",
+  "desc": "⏰ 10:00-22:00",
+  "address": "📍 Tầng 1 FLC Sea Tower Quy Nhơn",
+  "latitude": 0,
+  "longitude": 0,
+  "status": false,
+  "rating": 0,
+  "categories": [
+    {
+      "$oid": "659a7d826ec33e95bc39e95e"
+    }
+  ],
+  "img_name": [
+    "1704679547253.jpg"
+  ],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "659b58a95506896338af0659"
+  },
+  "user_id": {
+    "$oid": "659b55d35506896338af060f"
+  },
+  "name": "Sister Quy Nhơn",
+  "desc": "⏰ 10:00-22:00",
+  "address": "📍94 Hai Bà Trưng, Quy Nhơn",
+  "latitude": 0,
+  "longitude": 0,
+  "status": false,
+  "rating": 0,
+  "categories": [
+    {
+      "$oid": "659a7d826ec33e95bc39e95e"
+    }
+  ],
+  "img_name": [
+    "1704679593053.jpg"
+  ],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "659b58d75506896338af065f"
+  },
+  "user_id": {
+    "$oid": "659b55d35506896338af060f"
+  },
+  "name": "Haven Viet Nam",
+  "desc": "⏰ 10:00-21:00",
+  "address": "📍 Bãi Xếp Quy Nhơn",
+  "latitude": 0,
+  "longitude": 0,
+  "status": false,
+  "rating": 0,
+  "categories": [
+    {
+      "$oid": "659a7d826ec33e95bc39e95e"
+    }
+  ],
+  "img_name": [
+    "1704679639270.jpg"
+  ],
+  "__v": 0
+}]

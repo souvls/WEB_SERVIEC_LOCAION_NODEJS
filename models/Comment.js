@@ -4,14 +4,16 @@ const condb = require('../config/Comment');
 let commentSchema = mongoose.Schema({
     user_id:{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'users'
+        ref: 'Users'
     },
     location_id:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'location'
     },
     message: String,
-    create_at: Date,
+    rating: Number,
+    liked: Number,
+    created_at: Date,
     status: Boolean
 });
 

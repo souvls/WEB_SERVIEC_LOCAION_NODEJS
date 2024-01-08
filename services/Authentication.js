@@ -34,7 +34,7 @@ router.post("/register", (req, res) => {
                     role: false
                 })
                 await newUser.save().then(async nUser => {
-                    const refreshToken = token.getGenerateRefreshToken(fullname, email, '0', 'no_avatar.png');//tạo Refresh token
+                    const refreshToken = token.getGenerateRefreshToken(nUser._id, fullname, email, '0', 'no_avatar.png');//tạo Refresh token
                     //lưu refresh token của User mới
                     let newAuth = new Auth({
                         user_id: nUser._id,
@@ -77,7 +77,7 @@ router.post("/login",async (req,res)=>{
             const login = await Encrypt.check(password, result.password); //kiểm tra mật khẩu
             if (login) { // mật khẩu đúng
                 //token.DeleteToken() // xóa token cũ 
-                const accessToken = token.getGenerateAccessToken(result.fullname, result.email, result.role, result.avatar); //tạo Access Token;
+                const accessToken = token.getGenerateAccessToken(result._id, result.fullname, result.email, result.role, result.avatar); //tạo Access Token;
                 console.log(`=> ${result.fullname} is login`);
                 res.status(200).json({
                     'msg': 'Đăng nhập thành công',

@@ -4,7 +4,7 @@ const condb = require('../config/LoactionDB');
 let locationSchema = mongoose.Schema({
     user_id:{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'users'
+        ref: 'Users'
     },
     name:String,
     desc:String,
