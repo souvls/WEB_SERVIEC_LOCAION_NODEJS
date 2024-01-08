@@ -5,6 +5,7 @@ const Location = require('../models/Location');
 const Category = require('../models/Category');
 // ==== START =====  call multer uplaod file
 const multer = require('multer');
+const { populate } = require('dotenv');
 const storage = multer.diskStorage({
     destination:function(req,file,cb){
         cb(null,'uploads/locations')// local save file
@@ -139,8 +140,13 @@ router.post("/user/comment",token.jwtValidate,(req,res)=>{
 //Lấy danh sách comment theo location_id
 router.get("/comments/:location_id", async (req, res) => {
     const Comment = require('../models/Comment');
+    const User = require('../models/User');
     const location_id = req.params.location_id;
-    Comment.find({ 'location_id': location_id }).then((result) => {
+    Comment.find({ 'location_id': location_id }).then(async (result) => {
+        for ( const comment of result ){
+            const user = await User.findById(comment.user_id).exec();
+            comment.user_id = user;
+        }
         res.status(200).json({'comments': result});
     })
 })

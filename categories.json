@@ -1,23 +1,42 @@
-[
-  {
-    "name": "Nhà hàng"
+[{
+  "_id": {
+    "$oid": "659a7d826ec33e95bc39e95c"
   },
-  {
-    "name": "Khách sạn"
+  "name": "Nhà hàng"
+},
+{
+  "_id": {
+    "$oid": "659a7d826ec33e95bc39e95d"
   },
-  {
-    "name": "Quán ăn"
+  "name": "Khách sạn"
+},
+{
+  "_id": {
+    "$oid": "659a7d826ec33e95bc39e95e"
   },
-  {
-    "name": "Coffee"
+  "name": "Quán ăn"
+},
+{
+  "_id": {
+    "$oid": "659a7d826ec33e95bc39e95f"
   },
-  {
-    "name": "Quán nhậu"
+  "name": "Coffee"
+},
+{
+  "_id": {
+    "$oid": "659a7d826ec33e95bc39e960"
   },
-  {
-    "name": "Điểm du lịch"
+  "name": "Quán nhậu"
+},
+{
+  "_id": {
+    "$oid": "659a7d826ec33e95bc39e961"
   },
-  {
-    "name": "Nhà trọ"
-  }
-]
+  "name": "Điểm du lịch"
+},
+{
+  "_id": {
+    "$oid": "659b9538cd8f80c2c2ceb464"
+  },
+  "name": "Nhà trọ"
+}]
