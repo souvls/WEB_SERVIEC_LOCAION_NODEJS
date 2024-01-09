@@ -261,4 +261,172 @@
     "1704679639270.jpg"
   ],
   "__v": 0
+},
+{
+  "_id": {
+    "$oid": "659cbeb1bbc12af11dd4f2ba"
+  },
+  "user_id": {
+    "$oid": "659b55d35506896338af060f"
+  },
+  "name": "Larose - Bakery Coffee",
+  "desc": " ⏰ 7:00 - 22:00",
+  "address": "  📍 107 Huỳnh Tấn Phát, Đống Đa, Quy Nhơn,  1594 Hùng Vương, KV Phú Tài, Quy Nhơn",
+  "latitude": 0,
+  "longitude": 0,
+  "status": false,
+  "rating": 0,
+  "categories": [
+    {
+      "$oid": "659a7d826ec33e95bc39e95f"
+    }
+  ],
+  "img_name": [
+    "1704771249057.jpg"
+  ],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "659cbf18bbc12af11dd4f2d1"
+  },
+  "user_id": {
+    "$oid": "659b55d35506896338af060f"
+  },
+  "name": "Meca Quy Nhơn",
+  "desc": "⏰ 7:00 - 22:00",
+  "address": "📍 126 Nguyễn Huệ, Quy Nhơn",
+  "latitude": 0,
+  "longitude": 0,
+  "status": false,
+  "rating": 0,
+  "categories": [
+    {
+      "$oid": "659a7d826ec33e95bc39e95f"
+    }
+  ],
+  "img_name": [
+    "1704771352740.jpg"
+  ],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "659cbf42bbc12af11dd4f2d8"
+  },
+  "user_id": {
+    "$oid": "659b55d35506896338af060f"
+  },
+  "name": "Hari Hari",
+  "desc": "⏰ 7:00 - 22:00",
+  "address": "📍 04 Trương Văn Của, Quy Nhơn",
+  "latitude": 0,
+  "longitude": 0,
+  "status": false,
+  "rating": 0,
+  "categories": [
+    {
+      "$oid": "659a7d826ec33e95bc39e95f"
+    }
+  ],
+  "img_name": [
+    "1704771394654.jpg"
+  ],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "659cbf81bbc12af11dd4f2de"
+  },
+  "user_id": {
+    "$oid": "659b55d35506896338af060f"
+  },
+  "name": "Ikigai Cafe",
+  "desc": "⏰ 7:00 - 22:30",
+  "address": "📍 194 Nguyễn Thị Định, Quy Nhơn",
+  "latitude": 0,
+  "longitude": 0,
+  "status": false,
+  "rating": 0,
+  "categories": [
+    {
+      "$oid": "659a7d826ec33e95bc39e95f"
+    }
+  ],
+  "img_name": [
+    "1704771457261.jpg"
+  ],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "659cbfa1bbc12af11dd4f2e8"
+  },
+  "user_id": {
+    "$oid": "659b55d35506896338af060f"
+  },
+  "name": "The Ego Cafe",
+  "desc": "⏰ 6:30 - 22:00",
+  "address": "📍 45 - 47 Ngô Mây, Quy Nhơn",
+  "latitude": 0,
+  "longitude": 0,
+  "status": false,
+  "rating": 0,
+  "categories": [
+    {
+      "$oid": "659a7d826ec33e95bc39e95f"
+    }
+  ],
+  "img_name": [
+    "1704771489955.jpg"
+  ],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "659cbfb8bbc12af11dd4f2ee"
+  },
+  "user_id": {
+    "$oid": "659b55d35506896338af060f"
+  },
+  "name": "Missing U Coffee",
+  "desc": "⏰ 06:30 - 22:00",
+  "address": "📍 128 Hai Bà Trưng, Quy Nhơn",
+  "latitude": 0,
+  "longitude": 0,
+  "status": false,
+  "rating": 0,
+  "categories": [
+    {
+      "$oid": "659a7d826ec33e95bc39e95f"
+    }
+  ],
+  "img_name": [
+    "1704771512800.jpg"
+  ],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "659cbfd4bbc12af11dd4f2f4"
+  },
+  "user_id": {
+    "$oid": "659b55d35506896338af060f"
+  },
+  "name": "Chôm Coffee",
+  "desc": "⏰ 7:00 - 22:00",
+  "address": "📍 02 Võ Thị Yến, Quy Nhơn",
+  "latitude": 0,
+  "longitude": 0,
+  "status": false,
+  "rating": 0,
+  "categories": [
+    {
+      "$oid": "659a7d826ec33e95bc39e95f"
+    }
+  ],
+  "img_name": [
+    "1704771540592.jpg"
+  ],
+  "__v": 0
 }]

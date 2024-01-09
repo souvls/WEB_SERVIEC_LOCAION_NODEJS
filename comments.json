@@ -1,0 +1,38 @@
+[{
+  "_id": {
+    "$oid": "659b7cb455d9d479e7611ebb"
+  },
+  "user_id": {
+    "$oid": "659b55d35506896338af060f"
+  },
+  "location_id": {
+    "$oid": "659b58615506896338af064d"
+  },
+  "message": "Chỗ này ngon lắm mọi người nên đi ăn thử <3",
+  "rating": 4,
+  "liked": 0,
+  "created_at": {
+    "$date": "2024-01-08T04:40:20.229Z"
+  },
+  "status": true,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "659b80605bb89c2adfcac7cd"
+  },
+  "user_id": {
+    "$oid": "659b55d35506896338af060f"
+  },
+  "location_id": {
+    "$oid": "659b58615506896338af064d"
+  },
+  "message": "Tuy hơi đông nhưng mà phục vụ nhiệt tình",
+  "rating": 5,
+  "liked": 0,
+  "created_at": {
+    "$date": "2024-01-08T04:56:00.129Z"
+  },
+  "status": true,
+  "__v": 0
+}]

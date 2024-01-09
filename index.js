@@ -26,6 +26,8 @@ app.use(morgan('dev'));
 app.use(cors());
 app.use(bodyParser.json({limit:'10mb'}));
 app.use(express.static('uploads'));
+
+
 app.use(Authentication_Service);
 //Service for user
 app.use(Service_for_User);

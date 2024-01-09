@@ -119,9 +119,10 @@ router.post("/user/upload",token.jwtValidate,upload.array('images',6),async (req
 //========= end Loaction ======================
 
 //========= start comment ======================
-router.post("/user/comment",token.jwtValidate,(req,res)=>{
+router.post("/user/comment",token.jwtValidate,async (req,res)=>{
     const Comment = require('../models/Comment');
-    const {user_id,location_id,message, rating} = req.body
+    const {user_id, location_id, message, rating} = req.body
+    console.log(req.body)
     const NewComment = new Comment({
         user_id:user_id,
         location_id:location_id,
