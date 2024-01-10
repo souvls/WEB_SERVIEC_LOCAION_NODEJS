@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
+const User = require('../models/User');
 /**
  * @swagger
  * components:
@@ -129,10 +129,14 @@ router.get("/auth/locations",async (req,res)=>{
     const Location = require('../models/Location');
     const Category = require('../models/Category');
     const id = req.body.id;
-    await Location.find(id).populate("Category_id")
-    .then((location)=>{
+    await Location.find(id).populate("categories")
+    .then(async (result)=>{
+        for (const location of result ){
+            const user = await User.findById(location.user_id).exec();
+            location.user_id = user;
+        }
         console.log('=> find Location by ID');
-        res.status(200).json({'msg':'Danh sách nơi du lịch','Location':location})  
+        res.status(200).json({'msg':'Danh sách nơi du lịch','locations':result})  
     }).catch(err=>{
         console.log(err);
     })

@@ -1,0 +1,44 @@
+[{
+  "_id": {
+    "$oid": "659b55d35506896338af060f"
+  },
+  "fullname": "Hàn Quốc Trung",
+  "email": "trungvipqn12@gmail.com",
+  "password": "$2b$10$G0Hxim97n8QwSsg9L53c4eFWlOZtGVnxzvmyff41QH4Ps6di3Sa.i",
+  "avatar": "no_avatar.png",
+  "role": true,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "659e16cfdc35ec4432b91bd8"
+  },
+  "fullname": "Trần Đức Tình",
+  "email": "tinh@gmail.com",
+  "password": "$2b$10$15iNlucM77GHlBph7d33Huf/MiXMbuuKRSWLHsx/GqKRinMhriuH6",
+  "avatar": "no_avatar.png",
+  "role": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "659e178cdc35ec4432b91bfa"
+  },
+  "fullname": "Vy Thành Long",
+  "email": "long@gmail.com",
+  "password": "$2b$10$Gj7.xlnpAF3/UTY2aJ4hS.UmgT9CXwkv7G..ZlskL2dM8lEqp3.1y",
+  "avatar": "no_avatar.png",
+  "role": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "659e3eb2d74d72310d8a2f94"
+  },
+  "fullname": "Soulixai Vilasit",
+  "email": "sou@gmail.com",
+  "password": "$2b$10$GULhg6ELP0.TxQLH/cUMUOcqr3o9Nm9wdF79KyDbfcAI17eSQBl0S",
+  "avatar": "no_avatar.png",
+  "role": true,
+  "__v": 0
+}]

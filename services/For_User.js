@@ -3,6 +3,7 @@ const token = require('../middleware/token');
 const router = express.Router();
 const Location = require('../models/Location');
 const Category = require('../models/Category');
+const User = require('../models/User');
 // ==== START =====  call multer uplaod file
 const multer = require('multer');
 const { populate } = require('dotenv');
@@ -159,7 +160,11 @@ router.post("/location",(req,res)=>{
     const key = req.body.key;
     console.log(req.body.key);
     Location.find({ name: { $regex: key, $options: "i" } }).populate("categories")
-    .then((result)=>{
+    .then(async (result)=>{
+        for (const location of result ){
+            const user = await User.findById(location.user_id).exec();
+            location.user_id = user;
+        }
         console.log('=> Search location');
         res.status(200).json({'msg':'tìm location','locations':result})
     })

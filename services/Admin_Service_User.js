@@ -43,7 +43,7 @@ const upload = multer({
  */
 
 
-router.get("/auth/user/all",async (req,res)=>{
+router.get("/auth/users",async (req,res)=>{
     const User = require('../models/User');
     try{
         await User.find().then(async (User)=>{
@@ -60,7 +60,7 @@ router.get("/auth/user/all",async (req,res)=>{
             //     })
             // }
             console.log('=> admin get all user');
-            res.status(200).json({msg:'tất cả User',user:User});
+            res.status(200).json({msg:'tất cả User',users:User});
         }).catch(() =>{
             console.log("find all User not exit");
             res.status(500).json({'msg':'Chưa có người dùng trong database'})
