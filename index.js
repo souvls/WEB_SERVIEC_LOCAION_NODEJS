@@ -30,11 +30,11 @@ app.get('/',(req,res)=>{
     res.status(200).json({'msg':'Hello Welcome To My Service.'});
 });
 
+const token = require('./middleware/token');
 //=> phải có token mới dùng đượcAPI
 app.use(Service_for_User);
 
 //=> phải là Admin mới dùng được API
-const token = require('./middleware/token');
 const isAdmin = require('./middleware/check_admin');
 app.use(token.jwtValidate,isAdmin,Admin_Service_Location);
 app.use(token.jwtValidate,isAdmin,Admin_Service_User);

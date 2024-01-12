@@ -50,7 +50,18 @@ router.get("/categories",async (req,res)=>{//Liêt ke danh sách địa điểm 
 //=======================================================================================
 // Start API Location For User                                                               
 //=======================================================================================
-router.get("/locations", async (req, res) => {//Liệt kê location
+
+//Hàm cập nhật rating cho Location khi User comment rating
+async function updateRatingLocation(location_id){
+    const comments = await Comment.find({location_id: location_id});
+    const totalRating = comments.reduce((total, comment) => total + comment.rating, 0);
+    const avgRating = totalRating / comments.length;
+    await Location.findByIdAndUpdate(location_id, { rating: avgRating });
+}
+
+
+//Liệt kê location
+router.get("/locations", async (req, res) => {
     await Location.find().populate('categories').then((result) => {
         console.log('=> get all location');
         shuffleArray(result);
@@ -61,7 +72,8 @@ router.get("/locations", async (req, res) => {//Liệt kê location
     })
 })
 
-router.get("/location/:location_id", async (req, res) => { //liệt kê location theo id
+//liệt kê location theo id
+router.get("/location/:location_id", async (req, res) => { 
     const location_id = req.params.location_id;
     await Location.findById(location_id).populate("categories").then((location) => {
         if (location) {
@@ -79,15 +91,33 @@ router.get("/location/:location_id", async (req, res) => { //liệt kê location
     });
 })
 
-router.post("/user/locations",token.jwtValidate,async (req,res)=>{ //liẹt kê location theo id người dùng
-    const id = req.body.id;
-    console.log(id);
+//liẹt kê Location theo id người dùng
+router.get("/user/:id/location",token.jwtValidate,async (req,res)=>{ 
+    const id = req.params.id;
     const Location = require('../models/Location');
     const Category = require('../models/Category');
     await Location.find({user_id:id}).populate("categories")
     .then((location)=>{
         console.log('=> find Location by ID');
-        res.status(200).json({'msg':'Danh sách nơi du lịch của ID:','location':location})  
+        res.status(200).json({msg:'anh sách nơi du lịch của tôi',location:location})  
+    }).catch(err=>{
+        console.log(err);
+        console.log('=> ID not exits');
+        res.status(400).json({'msg':'không tìm thấy ID này!'})  
+    })
+})
+
+//liệt kê Location theo User ID yêu thích
+router.get("/user/:id/favourite",token.jwtValidate,async (req,res)=>{ 
+    const id = req.params.id;
+    const Favorite = require('../models/Favourite')
+    // const Location = require('../models/Location');
+    // const Category = require('../models/Category');
+    await Favorite.find({user_id:id})
+    .then((result)=>{
+        console.log('=> User get my favourit location');
+        console.log(result);
+        res.status(200).json({'msg':'Danh sách yêu thích của tôi:','location':result})  
     }).catch(err=>{
         console.log(err);
         console.log('=> ID not exits');
@@ -145,16 +175,30 @@ router.post("/location",(req,res)=>{
     })
 })
 
-//=========  comment ======================
 
-//Hàm cập nhật rating cho Location khi User comment rating
-async function updateRatingLocation(location_id){
-    const comments = await Comment.find({location_id: location_id});
-    const totalRating = comments.reduce((total, comment) => total + comment.rating, 0);
-    const avgRating = totalRating / comments.length;
-    await Location.findByIdAndUpdate(location_id, { rating: avgRating });
-    
-}
+//Lấy danh sách comment theo location_id
+router.get("/comments/:location/:id", async (req, res) => { 
+    const Comment = require('../models/Comment');
+    const User = require('../models/User');
+    const location_id = req.params.location_id;
+    Comment.find({ 'location_id': location_id }).then(async (result) => {
+        for ( const comment of result ){
+            const user = await User.findById(comment.user_id).exec();
+            comment.user_id = user;
+        }
+        res.status(200).json({'comments': result});
+    })
+})
+
+//=======================================================================================
+// End API Location For User                                                               
+//=======================================================================================
+
+
+//=======================================================================================
+// Start API user comment , Favorite                                                              
+//=======================================================================================
+//người dùng dánh giá và comment
 router.post("/user/comment",token.jwtValidate,async (req,res)=>{
     const Comment = require('../models/Comment');
     const {user_id, location_id, message, rating} = req.body
@@ -184,26 +228,39 @@ router.post("/user/comment",token.jwtValidate,async (req,res)=>{
                     res.status(200).json({'msg':'comment'})
                 })
             }
+        })      
+})
+
+//favorite , unfavorite
+router.get("/user/:id/favorite/:location",token.jwtValidate,async (req,res)=>{
+    const Favorite = require('../models/Favourite')
+    const user_id = req.params.id;
+    const location_id = req.params.location;
+
+    if(user_id !== null && location_id !== null){
+        //kiểm tra người dùng này đã thích location này chưa
+        await Favorite.findOne({user_id:user_id,location_id:location_id})
+        .then(result =>{
+            if(result){ // nếu đã thích rồi thì xóa (unfavorit)
+                Favorite.findByIdAndDelete(result._id)
+                    .then(()=>{
+                    res.status(201).json({status:"ok"})
+                    })
+            }else{ // nếu chưa thì tạo mới (add favourite)
+                const newFavorite = new Favorite({
+                    user_id:user_id,
+                    location_id:location_id
+                })
+                newFavorite.save()
+                    .then(()=>{
+                    res.status(201).json({status:"ok"})
+                    })
+            }  
         })
-        
+        .catch(err => console.log(err))
+    }
 })
-
-router.get("/comments/:location_id", async (req, res) => { //Lấy danh sách comment theo location_id
-    const Comment = require('../models/Comment');
-    const User = require('../models/User');
-    const location_id = req.params.location_id;
-    Comment.find({ 'location_id': location_id }).then(async (result) => {
-        for ( const comment of result ){
-            const user = await User.findById(comment.user_id).exec();
-            comment.user_id = user;
-        }
-        res.status(200).json({'comments': result});
-    })
-})
-
 //=======================================================================================
-// End API Location For User                                                               
+// End API user comment , Favorite                                                              
 //=======================================================================================
-
-
 module.exports = router;
