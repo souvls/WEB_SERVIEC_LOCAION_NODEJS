@@ -72,20 +72,18 @@ const User = require('../models/User');
  */
 
 
-// ============== start Category ======================
-//Liêt kê danh sách địa điểm du lịch
-router.get("/auth/categories",async (req,res)=>{
+//=======================================================================================
+// Start API Category For Admin                                                               
+//=======================================================================================
+router.get("/auth/categories",async (req,res)=>{ //Liêt kê danh sách địa điểm du lịch
     const Category = require('../models/Category');
     await Category.find().then((result)=>{
-        console.log('=> admin get all category');
+        console.log('=> admin get all categories');
         res.status(200).json({'msg':'Danh sách loại hình du lịch','categories':result})
     })
 })
 
-
-//thêm loại địa điểm du lịch mới
-
-router.post("/auth/category",async (req,res)=>{
+router.post("/auth/category",async (req,res)=>{ //thêm loại địa điểm du lịch mới
     const Category = require('../models/Category');
     const Name = req.body.name
 
@@ -107,9 +105,7 @@ router.post("/auth/category",async (req,res)=>{
     })
 })
 
-//xóa loại địa điểm du lịch
-
-router.delete("/auth/category/:id",async (req,res)=>{
+router.delete("/auth/category/:id",async (req,res)=>{ //xóa loại địa điểm du lịch
     const Category = require('../models/Category');
     const id = req.params.id;
     await Category.findByIdAndDelete(id)
@@ -120,12 +116,15 @@ router.delete("/auth/category/:id",async (req,res)=>{
         res.status(400).json({'msg':'Không tìn thấy, id: '+id })
     })
 })
-// ============== End Category ======================
+//=======================================================================================
+// End API Category For Admin                                                              
+//=======================================================================================
 
-// ============== Start Location ======================
 
-//all
-router.get("/auth/locations",async (req,res)=>{
+//=======================================================================================
+// Start API Location For Admin                                                              
+//=======================================================================================
+router.get("/auth/locations",async (req,res)=>{ //lấy danh sách điểm du lịch
     const Location = require('../models/Location');
     const Category = require('../models/Category');
     const id = req.body.id;
@@ -142,8 +141,7 @@ router.get("/auth/locations",async (req,res)=>{
     })
 })
 
-//find by id
-router.get("/auth/location/:id",async (req,res)=>{
+router.get("/auth/location/:id",async (req,res)=>{ //Tìm điểm du lịch theo ID
     const Location = require('../models/Location');
     const Category = require('../models/Category');
     const id = req.params.id;
@@ -155,7 +153,8 @@ router.get("/auth/location/:id",async (req,res)=>{
         console.log(err);
     })
 })
-router.delete("auth/location/:id",async (req,res)=>{
+
+router.delete("/auth/location/:id",async (req,res)=>{ //Xóa địa điểm du lịch
     const Location = require('../models/Location');
     const id = req.params.id
     await Location.findByIdAndDelete({ _id: id }).then(()=>{
@@ -163,19 +162,22 @@ router.delete("auth/location/:id",async (req,res)=>{
         res.status(200).json({ 'msg': 'xóa location ID:' + id})
     })
 })
-// router.patch("/auth/location/status", async (req, res) => {
-//     const Location = require('../models/Location');
-//     const id = req.body.id;
-//     await Location.findById({ _id: id })
-//         .then(async (x) => {
-//             y = !x.Status
-//             await Location.updateOne({_id:id},{Status:y})
-//             console.log('=> Update Location by ID');
-//             res.status(200).json({ 'msg': 'cật nhật status location ID:' + id+'/'+x.Status+' ==> '+y})
-//         }).catch(err => {
-//             console.log(err);
-//         })
-// })
 
+/*router.patch("/auth/location/status", async (req, res) => {
+    const Location = require('../models/Location');
+    const id = req.body.id;
+    await Location.findById({ _id: id })
+        .then(async (x) => {
+            y = !x.Status
+            await Location.updateOne({_id:id},{Status:y})
+            console.log('=> Update Location by ID');
+            res.status(200).json({ 'msg': 'cật nhật status location ID:' + id+'/'+x.Status+' ==> '+y})
+        }).catch(err => {
+            console.log(err);
+        })
+})*/
+//=======================================================================================
+// Start API Location For Admin                                                              
+//=======================================================================================
 
 module.exports = router;

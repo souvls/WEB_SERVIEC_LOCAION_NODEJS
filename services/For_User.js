@@ -27,9 +27,12 @@ function shuffleArray(array) {
         array[j] = temp;
     }
 }
-// ================ start category ====================
-//Liêt ke danh sách địa điểm du lịch
-router.get("/categories",async (req,res)=>{
+
+//=======================================================================================
+// Start API Category For User                                                               
+//=======================================================================================
+
+router.get("/categories",async (req,res)=>{//Liêt ke danh sách địa điểm du lịch
     const Category = require('../models/Category');
     
     await Category.find().then((result)=>{
@@ -37,9 +40,16 @@ router.get("/categories",async (req,res)=>{
         res.status(200).json({'msg':'Danh sách loại hình du lịch','categories':result})
     })
 })
-// ================ end category ====================
-//Liệt kê location
-router.get("/locations", async (req, res) => {
+//=======================================================================================
+// End API Category For User                                                               
+//=======================================================================================
+
+
+
+//=======================================================================================
+// Start API Location For User                                                               
+//=======================================================================================
+router.get("/locations", async (req, res) => {//Liệt kê location
     await Location.find().populate('categories').then((result) => {
         console.log('=> get all location');
         shuffleArray(result);
@@ -49,8 +59,8 @@ router.get("/locations", async (req, res) => {
         })
     })
 })
-//Lấy location theo id
-router.get("/location/:location_id", async (req, res) => {
+
+router.get("/location/:location_id", async (req, res) => { //liệt kê location theo id
     const location_id = req.params.location_id;
     await Location.findById(location_id).populate("categories").then((location) => {
         if (location) {
@@ -68,8 +78,7 @@ router.get("/location/:location_id", async (req, res) => {
     });
 })
 
-//========= start Location ======================
-router.post("/user/locations",token.jwtValidate,async (req,res)=>{
+router.post("/user/locations",token.jwtValidate,async (req,res)=>{ //liẹt kê location theo id người dùng
     const id = req.body.id;
     console.log(id);
     const Location = require('../models/Location');
@@ -85,7 +94,7 @@ router.post("/user/locations",token.jwtValidate,async (req,res)=>{
     })
 })
 
-
+// người dùng Upload location
 router.post("/user/upload",token.jwtValidate,upload.array('images',6),async (req,res)=>{
     const Location = require('../models/Location');
     const {user_id,name,desc,address,latitude,longitude,categories } = req.body
@@ -103,8 +112,8 @@ router.post("/user/upload",token.jwtValidate,upload.array('images',6),async (req
         name:name,
         desc:desc,
         address:address,
-        latitude:0,
-        longitude:0,
+        latitude:latitude,
+        longitude:longitude,
         status:false,
         rating:0,
         categories: parsedCategories,
@@ -115,41 +124,6 @@ router.post("/user/upload",token.jwtValidate,upload.array('images',6),async (req
         res.status(200).json({'msg':'thêm nơi du lich thành công','result':location})
     }).catch(err=>{
         console.log(err);
-    })
-})
-//========= end Loaction ======================
-
-//========= start comment ======================
-router.post("/user/comment",token.jwtValidate,async (req,res)=>{
-    const Comment = require('../models/Comment');
-    const {user_id, location_id, message, rating} = req.body
-    console.log(req.body)
-    const NewComment = new Comment({
-        user_id:user_id,
-        location_id:location_id,
-        message:message,
-        rating: rating,
-        liked: 0,
-        created_at: Date.now(),
-        status: true
-    })
-    NewComment.save().then(()=>{
-        console.log('=> user create new comment');
-        res.status(200).json({'msg':'comment'})
-    })
-})
-
-//Lấy danh sách comment theo location_id
-router.get("/comments/:location_id", async (req, res) => {
-    const Comment = require('../models/Comment');
-    const User = require('../models/User');
-    const location_id = req.params.location_id;
-    Comment.find({ 'location_id': location_id }).then(async (result) => {
-        for ( const comment of result ){
-            const user = await User.findById(comment.user_id).exec();
-            comment.user_id = user;
-        }
-        res.status(200).json({'comments': result});
     })
 })
 
@@ -169,4 +143,54 @@ router.post("/location",(req,res)=>{
         res.status(200).json({'msg':'tìm location','locations':result})
     })
 })
+
+//=========  comment ======================
+router.post("/user/comment",token.jwtValidate,async (req,res)=>{
+    const Comment = require('../models/Comment');
+    const {user_id, location_id, message, rating} = req.body
+
+    await Comment.findOne({user_id:user_id,location_id:location_id}) //tìm Usẻ này Commet trong Location này chưa
+        .then((result)=>{
+            if(result){ // nếu comment rồi thì cập nhật comment
+                Comment.findByIdAndUpdate(result._id,{message:message,rating:rating})
+                    .then(()=>{
+                        console.log('=> user update comment');
+                        res.status(200).json({'msg':'sửa comment'})
+                    })
+            }else{ // chưa comment thì tạo mới
+                const NewComment = new Comment({
+                    user_id:user_id,
+                    location_id:location_id,
+                    message:message,
+                    rating: rating,
+                    liked:0,
+                    created_at: Date.now(),
+                    status: true
+                })
+                NewComment.save().then(()=>{
+                    console.log('=> user create new comment');
+                    res.status(200).json({'msg':'comment'})
+                })
+            }
+        })
+})
+
+router.get("/comments/:location_id", async (req, res) => { //Lấy danh sách comment theo location_id
+    const Comment = require('../models/Comment');
+    const User = require('../models/User');
+    const location_id = req.params.location_id;
+    Comment.find({ 'location_id': location_id }).then(async (result) => {
+        for ( const comment of result ){
+            const user = await User.findById(comment.user_id).exec();
+            comment.user_id = user;
+        }
+        res.status(200).json({'comments': result});
+    })
+})
+
+//=======================================================================================
+// End API Location For User                                                               
+//=======================================================================================
+
+
 module.exports = router;
