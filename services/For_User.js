@@ -4,6 +4,7 @@ const router = express.Router();
 const Location = require('../models/Location');
 const Category = require('../models/Category');
 const User = require('../models/User');
+const Comment = require('../models/Comment');
 // ==== START =====  call multer uplaod file
 const multer = require('multer');
 const { populate } = require('dotenv');
@@ -145,15 +146,25 @@ router.post("/location",(req,res)=>{
 })
 
 //=========  comment ======================
+
+//Hàm cập nhật rating cho Location khi User comment rating
+async function updateRatingLocation(location_id){
+    const comments = await Comment.find({location_id: location_id});
+    const totalRating = comments.reduce((total, comment) => total + comment.rating, 0);
+    const avgRating = totalRating / comments.length;
+    await Location.findByIdAndUpdate(location_id, { rating: avgRating });
+    
+}
 router.post("/user/comment",token.jwtValidate,async (req,res)=>{
     const Comment = require('../models/Comment');
     const {user_id, location_id, message, rating} = req.body
 
-    await Comment.findOne({user_id:user_id,location_id:location_id}) //tìm Usẻ này Commet trong Location này chưa
+    await Comment.findOne({user_id:user_id, location_id:location_id}) //tìm User này Commet trong Location này chưa
         .then((result)=>{
             if(result){ // nếu comment rồi thì cập nhật comment
                 Comment.findByIdAndUpdate(result._id,{message:message,rating:rating})
                     .then(()=>{
+                        updateRatingLocation(location_id);
                         console.log('=> user update comment');
                         res.status(200).json({'msg':'sửa comment'})
                     })
@@ -168,11 +179,13 @@ router.post("/user/comment",token.jwtValidate,async (req,res)=>{
                     status: true
                 })
                 NewComment.save().then(()=>{
+                    updateRatingLocation(location_id);
                     console.log('=> user create new comment');
                     res.status(200).json({'msg':'comment'})
                 })
             }
         })
+        
 })
 
 router.get("/comments/:location_id", async (req, res) => { //Lấy danh sách comment theo location_id
