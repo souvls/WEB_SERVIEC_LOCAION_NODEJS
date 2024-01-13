@@ -5,6 +5,7 @@ const Location = require('../models/Location');
 const Category = require('../models/Category');
 const User = require('../models/User');
 const Comment = require('../models/Comment');
+const Favorite = require('../models/Favourite')
 // ==== START =====  call multer uplaod file
 const multer = require('multer');
 const { populate } = require('dotenv');
@@ -62,9 +63,13 @@ async function updateRatingLocation(location_id){
 
 //Liệt kê location
 router.get("/locations", async (req, res) => {
-    await Location.find().populate('categories').then((result) => {
+    await Location.find().populate('categories').then(async (result) => {
         console.log('=> get all location');
         shuffleArray(result);
+        for (const location of result){
+            const user = await User.findById(location.user_id).exec();
+            location.user_id = user;
+        }
         res.status(200).json({
             'msg': 'Danh sách địa điểm',
             'locations': result
@@ -90,16 +95,36 @@ router.get("/location/:location_id", async (req, res) => {
         });
     });
 })
-
+//Liệt kê thông tin người dùng  (userInfo, favouriteList, userLocation)
+router.get("/user/:id", async (req, res) => {
+    const user_id = req.params.id;
+    //user location
+    const user_locations = await Location.find({user_id: user_id}).populate("categories");
+    //user info
+    const user_info = await User.findById(user_id);
+    const user_favourite = await Favorite.find({ user_id: user_id})
+    for (const favourite of user_favourite ){
+        const location = await Location.findById(favourite.location_id).exec();
+        if (location) {
+            favourite.location_id = location;
+        }
+    };
+    res.status(200).json({
+        msg: 'Thông tin người dùng',
+        info: user_info,
+        locations: user_locations,
+        favourite_locations: user_favourite
+    })
+})
 //liẹt kê Location theo id người dùng
-router.get("/user/:id/location",token.jwtValidate,async (req,res)=>{ 
+router.get("/user/:id/locations",token.jwtValidate,async (req,res)=>{ 
     const id = req.params.id;
     const Location = require('../models/Location');
     const Category = require('../models/Category');
     await Location.find({user_id:id}).populate("categories")
     .then((location)=>{
         console.log('=> find Location by ID');
-        res.status(200).json({msg:'anh sách nơi du lịch của tôi',location:location})  
+        res.status(200).json({msg:'Danh sách nơi du lịch của tôi',locations:location})  
     }).catch(err=>{
         console.log(err);
         console.log('=> ID not exits');
@@ -177,10 +202,10 @@ router.post("/location",(req,res)=>{
 
 
 //Lấy danh sách comment theo location_id
-router.get("/comments/:location/:id", async (req, res) => { 
+router.get("/comments/:id", async (req, res) => { 
     const Comment = require('../models/Comment');
     const User = require('../models/User');
-    const location_id = req.params.location_id;
+    const location_id = req.params.id;
     Comment.find({ 'location_id': location_id }).then(async (result) => {
         for ( const comment of result ){
             const user = await User.findById(comment.user_id).exec();
@@ -232,19 +257,19 @@ router.post("/user/comment",token.jwtValidate,async (req,res)=>{
 })
 
 //favorite , unfavorite
-router.get("/user/:id/favorite/:location",token.jwtValidate,async (req,res)=>{
+router.post("/user/:user_id/favorite/:location_id",token.jwtValidate,async (req,res)=>{
     const Favorite = require('../models/Favourite')
-    const user_id = req.params.id;
-    const location_id = req.params.location;
+    const user_id = req.params.user_id;
+    const location_id = req.params.location_id;
 
     if(user_id !== null && location_id !== null){
         //kiểm tra người dùng này đã thích location này chưa
-        await Favorite.findOne({user_id:user_id,location_id:location_id})
+        await Favorite.findOne({user_id:user_id, location_id:location_id})
         .then(result =>{
-            if(result){ // nếu đã thích rồi thì xóa (unfavorit)
+            if(result){ // nếu đã thích rồi thì xóa (unfavorite)
                 Favorite.findByIdAndDelete(result._id)
                     .then(()=>{
-                    res.status(201).json({status:"ok"})
+                    res.status(201).json({status:"Đã xóa địa điểm khỏi danh sách yêu thích"})
                     })
             }else{ // nếu chưa thì tạo mới (add favourite)
                 const newFavorite = new Favorite({
@@ -253,13 +278,16 @@ router.get("/user/:id/favorite/:location",token.jwtValidate,async (req,res)=>{
                 })
                 newFavorite.save()
                     .then(()=>{
-                    res.status(201).json({status:"ok"})
+                    res.status(201).json({status:"Đã thêm địa điểm vào danh sách yêu thích"})
                     })
             }  
         })
         .catch(err => console.log(err))
     }
 })
+
+//get favorite list by user id
+
 //=======================================================================================
 // End API user comment , Favorite                                                              
 //=======================================================================================
