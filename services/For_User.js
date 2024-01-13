@@ -6,12 +6,13 @@ const Category = require('../models/Category');
 const User = require('../models/User');
 const Comment = require('../models/Comment');
 const Favorite = require('../models/Favourite')
+
 // ==== START =====  call multer uplaod file
 const multer = require('multer');
-const { populate } = require('dotenv');
 const storage = multer.diskStorage({
     destination:function(req,file,cb){
-        cb(null,'uploads/locations')// local save file
+        const dir = file.fieldname === 'images' ? 'location' : 'avatar';
+        cb(null,'uploads/'+dir)// local save file
     },
     filename:function(req,file,cb){
         const ext = file.originalname.split(".")[1];
@@ -19,6 +20,7 @@ const storage = multer.diskStorage({
     }
 })
 const upload = multer({storage});
+//=====================================================================
 
 //Hàm shuffle xáo trộn mảng
 function shuffleArray(array) {
@@ -29,6 +31,79 @@ function shuffleArray(array) {
         array[j] = temp;
     }
 }
+
+//=======================================================================================
+// Start Profile                                                              
+//=======================================================================================
+//lấy thông tin người dùng 
+router.get("user/profile/:id",token,token.jwtValidate,async (req,res)=>{
+    const id = req.params.id;
+    const User = require('../models/User');
+    await User.findById(id).then(User=>{
+        res.status(200).json({msg:'thông tin người dùng',user:User});
+    }).catch(() =>{
+        res.status(500).json({'msg':'Không tìm thấy mã ID của người dùng này.'})
+    });  
+})
+//Đổi fullname
+router.put("/user/update/fullname",token.jwtValidate,async (req,res)=>{
+    const {id,fullname} = req.body;
+    const User = require('../models/User')  
+    await User.findByIdAndUpdate(id,{fullname:fullname}).then(()=>{
+        res.status(200).json({'msg':'đổi họ tên',})
+    }).catch(err =>console.log(err))
+})
+//Đổi Mật khẩu
+router.put("/user/update/pasword",token.jwtValidate,async (req,res)=>{
+    const {id,oldPassword,newPassword} = req.body;
+    const User = require('../models/User');
+    const Encypt = require('../middleware/encrypt');
+    
+    //tìm người dùng
+    await User.findById(id).then(async (result)=>{
+        //kiểm tra mật khẩu cũ
+        const checkPass = await Encypt.check(oldPassword,result.password)
+        if(checkPass){ // đổi mật khẩu
+            const newPassHashed = await Encypt.hash(newPassword)
+            User.findByIdAndUpdate(result._id,{password:newPassHashed}).then(()=>{
+                res.status(200).json({'msg':'đổi mật khẩu',})
+            })
+        }else{
+            res.status(400).json({'msg':'mật khẩu không đúng',})
+        }
+    }).catch(err =>console.log(err));
+}) 
+//đổi avatar       
+router.put("/user/update/avatar" ,token.jwtValidate,upload.single("avatar"), (req,res)=>{
+    const User = require('../models/User');
+    const id = req.body.id;
+    const avatar = req.file.filename
+    User.findByIdAndUpdate(id,{avatar:avatar}).then(result =>{
+        if(result){
+            //Xóa Avatar cũ
+            if(result.avatar !== 'no_avatar.png'){
+                const fs = require('fs');
+                const filePath = 'uploads/avatar/'+result.avatar;
+                fs.unlink(filePath, (err) => {
+                    if (err) {
+                      console.error('Error deleting file:', err);
+                    } else {
+                      console.log('File deleted successfully!');
+                    }
+                  });
+            }
+            res.status(200).json({msg: 'Cập nhật thành công'})
+        }else{
+            res.status(400).json({msg: 'Không Cập nhật'})
+        }
+    }).catch(err=>{
+        console.log(err)
+        res.status(400).json({msg: 'Không tìm thấy người dùng ID này',})
+    })
+})
+//=======================================================================================
+// End Profile                                                              
+//=======================================================================================
 
 //=======================================================================================
 // Start API Category For User                                                               
