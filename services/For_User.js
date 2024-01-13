@@ -138,7 +138,7 @@ async function updateRatingLocation(location_id){
 
 //Liệt kê location
 router.get("/locations", async (req, res) => {
-    await Location.find().populate('categories').then(async (result) => {
+    await Location.find({status: true}).populate('categories').then(async (result) => {
         console.log('=> get all location');
         shuffleArray(result);
         for (const location of result){

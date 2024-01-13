@@ -126,18 +126,22 @@ router.delete("/auth/category/:id",async (req,res)=>{ //xóa loại địa đi�
 //=======================================================================================
 
 //duyệt 
-router.put("auth/allow/location/:id",async (req,res)=>{
-    const id = req.params.id;
+router.put("/auth/allow/location/:location_id",async (req,res)=>{
+    const id = req.params.location_id;
     const Location = require('../models/Location');
-    await findById(id)
-        then(result=>{
-            Location.findByIdAndUpdate(result._id,{status:!result.status})
-            res.status(200).json({'msg':'cập nhật Status thành công'})  
-        })
-        .catch(err=>{
-            console.log(err);
-            res.status(400).json({'msg':'không! cập nhật'})  
-        })
+
+    try {
+        const location = await Location.findById(id);
+        if (!location) {
+        return res.status(404).json({ 'msg': 'Không tìm thấy địa điểm' });
+        }
+        location.status = !location.status;
+        await location.save();
+        return res.status(200).json({ 'msg': 'Cập nhật status thành công' });
+    } catch (err) {
+        console.log(err);
+        return res.status(400).json({ 'msg': 'Không thể cập nhật status' });
+    }
 })
 //lấy danh sách điểm du lịch
 router.get("/auth/locations",async (req,res)=>{ //lấy danh sách điểm du lịch
@@ -170,12 +174,12 @@ router.get("/auth/location/:id",async (req,res)=>{ //Tìm điểm du lịch theo
     })
 })
 
-router.delete("/auth/location/:id",async (req,res)=>{ //Xóa địa điểm du lịch
+router.delete("/auth/location/:location_id",async (req,res)=>{ //Xóa địa điểm du lịch
     const Location = require('../models/Location');
-    const id = req.params.id
+    const id = req.params.location_id
     await Location.findByIdAndDelete({ _id: id }).then(()=>{
         console.log('=> Delete Location by ID');
-        res.status(200).json({ 'msg': 'xóa location ID:' + id})
+        res.status(200).json({ 'msg': 'Xóa thành công location_id:' + id})
     })
 })
 
