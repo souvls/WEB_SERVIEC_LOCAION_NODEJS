@@ -124,6 +124,22 @@ router.delete("/auth/category/:id",async (req,res)=>{ //xóa loại địa đi�
 //=======================================================================================
 // Start API Location For Admin                                                              
 //=======================================================================================
+
+//duyệt 
+router.put("auth/allow/location/:id",async (req,res)=>{
+    const id = req.params.id;
+    const Location = require('../models/Location');
+    await findById(id)
+        then(result=>{
+            Location.findByIdAndUpdate(result._id,{status:!result.status})
+            res.status(200).json({'msg':'cập nhật Status thành công'})  
+        })
+        .catch(err=>{
+            console.log(err);
+            res.status(400).json({'msg':'không! cập nhật'})  
+        })
+})
+//lấy danh sách điểm du lịch
 router.get("/auth/locations",async (req,res)=>{ //lấy danh sách điểm du lịch
     const Location = require('../models/Location');
     const Category = require('../models/Category');
