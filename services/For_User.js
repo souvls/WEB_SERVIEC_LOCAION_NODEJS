@@ -11,7 +11,7 @@ const Favorite = require('../models/Favourite')
 const multer = require('multer');
 const storage = multer.diskStorage({
     destination:function(req,file,cb){
-        const dir = file.fieldname === 'images' ? 'location' : 'avatar';
+        const dir = file.fieldname === 'images' ? 'locations' : 'avatar';
         cb(null,'uploads/'+dir)// local save file
     },
     filename:function(req,file,cb){

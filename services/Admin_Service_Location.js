@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
+const fs = require('fs');
+const path = require('path');
+const Location = require('../models/Location')
 /**
  * @swagger
  * components:
@@ -54,22 +57,6 @@ const User = require('../models/User');
  *           type: array
  */
 
-/**
- * @swagger
- * components:
- *   schemas:
- *     Img_location:
- *       type: object
- *       required:
- *       properties:
- *         _id:
- *           type: objectId
- *           description: Tự động tạo _id hình ảnh địa điểm
- *         location_id:
- *           type: objectId
- *         name:
- *           type: string
- */
 
 
 //=======================================================================================
@@ -85,7 +72,7 @@ router.get("/auth/categories",async (req,res)=>{ //Liêt kê danh sách địa �
 
 router.post("/auth/category",async (req,res)=>{ //thêm loại địa điểm du lịch mới
     const Category = require('../models/Category');
-    const Name = req.body.name
+    const Name = req.body.name;
 
     await Category.findOne({name:Name}).then(async (result)=>{
         if(!result){
@@ -105,9 +92,9 @@ router.post("/auth/category",async (req,res)=>{ //thêm loại địa điểm du
     })
 })
 
-router.delete("/auth/category/:id",async (req,res)=>{ //xóa loại địa điểm du lịch
+router.delete("/auth/category/:category_id",async (req,res)=>{ //xóa loại địa điểm du lịch
     const Category = require('../models/Category');
-    const id = req.params.id;
+    const id = req.params.category_id;
     await Category.findByIdAndDelete(id)
     .then((result)=>{
         console.log('=> admin, delete category id:'+id);
@@ -175,12 +162,29 @@ router.get("/auth/location/:id",async (req,res)=>{ //Tìm điểm du lịch theo
 })
 
 router.delete("/auth/location/:location_id",async (req,res)=>{ //Xóa địa điểm du lịch
-    const Location = require('../models/Location');
-    const id = req.params.location_id
-    await Location.findByIdAndDelete({ _id: id }).then(()=>{
-        console.log('=> Delete Location by ID');
-        res.status(200).json({ 'msg': 'Xóa thành công location_id:' + id})
-    })
+    try {
+        const id = req.params.location_id;
+        const location = await Location.findByIdAndDelete({ _id: id });
+        if (!location) {
+            return res.status(404).json({ 'msg': 'Không tìm thấy địa điểm du lịch với ID: ' + id });
+        }
+        const fileName = location.img_name;
+        for (const img of fileName) {
+            const filePath = path.join(__dirname, '..', `uploads/locations/${img}`);
+            // const filePath = (`../uploads/locations/${img}`);
+            console.log(filePath);
+            try {
+                await fs.promises.unlink(filePath);
+            } catch (err) {
+                console.error('Lỗi khi xóa file:', err);
+            }
+        }
+        console.log('=> Xóa địa điểm du lịch bởi ID');
+        res.status(200).json({ 'msg': 'Xóa thành công địa điểm du lịch với ID: ' + id });
+    } catch (error) {
+        console.error('Lỗi khi xóa địa điểm du lịch:', error);
+        res.status(500).json({ 'msg': 'Lỗi server khi xóa địa điểm du lịch' });
+    }
 })
 
 /*router.patch("/auth/location/status", async (req, res) => {
