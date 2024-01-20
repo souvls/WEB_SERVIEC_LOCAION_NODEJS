@@ -77,6 +77,8 @@ const Location = require('../models/Location')
  *     description: API để lấy danh sách các loại hình du lịch từ server.
  *     tags:
  *       - admin-categories
+ *     security:
+ *       - BearerAuth: []
  *     responses:
  *       200:
  *         description: Thành công. Trả về danh sách các loại hình du lịch.

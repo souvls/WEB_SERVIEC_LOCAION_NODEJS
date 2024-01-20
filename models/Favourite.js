@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const condb = require('../config/Comment');
+const condb = require('../config/FavouriteDB');
 //design schema
 let Schema = mongoose.Schema({
     user_id:{

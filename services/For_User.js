@@ -6,7 +6,7 @@ const Category = require('../models/Category');
 const User = require('../models/User');
 const Comment = require('../models/Comment');
 const Favorite = require('../models/Favourite')
-
+const axios = require('axios');
 // ==== START =====  call multer uplaod file
 const multer = require('multer');
 const storage = multer.diskStorage({
@@ -32,13 +32,33 @@ function shuffleArray(array) {
     }
 }
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Favourite:
+ *       type: object
+ *       required:
+ *       properties:
+ *         _id:
+ *           type: objectId
+ *           description: Tự động tạo _id của favourite
+ *         user_id:
+ *           type: objectId
+ *           description: Id người dùng
+ *         location_id:
+ *           type: ObjectId
+ *           description: Id địa điểm
+ */
+
+
+
 //=======================================================================================
 // Start Profile                                                              
 //=======================================================================================
 //lấy thông tin người dùng 
 router.get("user/profile/:id",token,token.jwtValidate,async (req,res)=>{
     const id = req.params.id;
-    const User = require('../models/User');
     await User.findById(id).then(User=>{
         res.status(200).json({msg:'thông tin người dùng',user:User});
     }).catch(() =>{
@@ -57,7 +77,7 @@ router.put("/user/update/fullname",token.jwtValidate,async (req,res)=>{
 })
 
 //Đổi Mật khẩu
-router.put("/user/update/pasword",token.jwtValidate,async (req,res)=>{
+router.put("/user/update/password",token.jwtValidate,async (req,res)=>{
     const {id,oldPassword,newPassword} = req.body;
     const User = require('../models/User');
     const Encypt = require('../middleware/encrypt');
@@ -184,18 +204,22 @@ async function updateRatingLocation(location_id){
  */
 
 router.get("/locations", async (req, res) => {
-    await Location.find({status: true}).populate('categories').then(async (result) => {
-        console.log('=> get all location');
-        shuffleArray(result);
-        for (const location of result){
-            const user = await User.findById(location.user_id).exec();
-            location.user_id = user;
-        }
+    try {
+        const locations = await Location.find({ status: true }).populate('categories').lean().exec();
+        const locationsWithUsers = await Promise.all(locations.map(async (location) => {
+            const userResponse = await axios.get(`http://localhost:4000/user/${location.user_id}`);
+            const userInfo = userResponse.data.info;
+            location.user_id = userInfo;
+            return location;
+        }));
         res.status(200).json({
             'msg': 'Danh sách địa điểm',
-            'locations': result
-        })
-    })
+            'locations': locationsWithUsers
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ 'error': 'Internal Server Error' });
+    }
 })
 
 //liệt kê location theo id
@@ -303,17 +327,13 @@ router.get("/location/:location_id", async (req, res) => {
 
 router.get("/user/:id", async (req, res) => {
     const user_id = req.params.id;
-    //user location
-    const user_locations = await Location.find({user_id: user_id}).populate("categories");
+    //user location : gọi tới api location theo user id để lấy locations
+    const locations = await axios.get(`http://localhost:4000/user/${user_id}/locations`)
+    const user_locations = locations.data.locations;
     //user info
     const user_info = await User.findById(user_id);
-    const user_favourite = await Favorite.find({ user_id: user_id})
-    for (const favourite of user_favourite ){
-        const location = await Location.findById(favourite.location_id).exec();
-        if (location) {
-            favourite.location_id = location;
-        }
-    };
+    const favourites = await axios.get(`http://localhost:4000/user/${user_id}/favourite`)
+    const user_favourite = favourites.data.location;
     res.status(200).json({
         msg: 'Thông tin người dùng',
         info: user_info,
@@ -375,10 +395,8 @@ router.get("/user/:id", async (req, res) => {
  */
 
 
-router.get("/user/:id/locations",token.jwtValidate,async (req,res)=>{ 
+router.get("/user/:id/locations",async (req,res)=>{ 
     const id = req.params.id;
-    const Location = require('../models/Location');
-    const Category = require('../models/Category');
     await Location.find({user_id:id}).populate("categories")
     .then((location)=>{
         console.log('=> find Location by ID');
@@ -435,14 +453,11 @@ router.get("/user/:id/locations",token.jwtValidate,async (req,res)=>{
  *               msg: "Internal Server Error"
  */
 
-router.get("/user/:id/favourite",token.jwtValidate,async (req,res)=>{ 
+router.get("/user/:id/favourite",async (req,res)=>{ 
     const id = req.params.id;
-    const Favorite = require('../models/Favourite')
-    // const Location = require('../models/Location');
-    // const Category = require('../models/Category');
     await Favorite.find({user_id:id})
     .then((result)=>{
-        console.log('=> User get my favourit location');
+        console.log('=> User get my favourite location');
         console.log(result);
         res.status(200).json({'msg':'Danh sách yêu thích của tôi:','location':result})  
     }).catch(err=>{
@@ -537,7 +552,6 @@ router.get("/user/:id/favourite",token.jwtValidate,async (req,res)=>{
  */
 
 router.post("/user/upload",token.jwtValidate,upload.array('images',6),async (req,res)=>{
-    const Location = require('../models/Location');
     const {user_id,name,desc,address,latitude,longitude,categories } = req.body
     var imgs = [];
     for(var i = 0; i < req.files.length ; i++){
@@ -622,20 +636,25 @@ router.post("/user/upload",token.jwtValidate,upload.array('images',6),async (req
  *               msg: "Internal Server Error"
  */
 
-router.post("/location",(req,res)=>{
-    const Location = require('../models/Location');
-    const Category = require('../models/Category');
+router.post("/location", async (req,res)=>{
     const key = req.body.key;
-    console.log(req.body.key);
-    Location.find({ name: { $regex: key, $options: "i" } }).populate("categories")
-    .then(async (result)=>{
-        for (const location of result ){
-            const user = await User.findById(location.user_id).exec();
-            location.user_id = user;
-        }
-        console.log('=> Search location');
-        res.status(200).json({'msg':'tìm location','locations':result})
-    })
+    try{
+        const locations = await Location.find({ name: { $regex: key, $options: "i" } }).populate("categories").lean().exec();
+        const locationsWithUsers = await Promise.all(locations.map(async (location) => {
+            const userResponse = await axios.get(`http://localhost:4000/user/${location.user_id}`);
+            const userInfo = userResponse.data.info;
+            location.user_id = userInfo;
+            return location;
+        }));
+        res.status(200).json({
+            'msg': 'Danh sách địa điểm',
+            'locations': locationsWithUsers
+        });
+    }catch (error){
+        console.error(error);
+        res.status(500).json({ 'error': 'Internal Server Error' });
+    }
+
 })
 
 
@@ -682,16 +701,17 @@ router.post("/location",(req,res)=>{
  */
 
 router.get("/comments/:id", async (req, res) => { 
-    const Comment = require('../models/Comment');
-    const User = require('../models/User');
+    // lấy tất cả bình luận của location_id
     const location_id = req.params.id;
-    Comment.find({ 'location_id': location_id }).then(async (result) => {
-        for ( const comment of result ){
-            const user = await User.findById(comment.user_id).exec();
-            comment.user_id = user;
-        }
-        res.status(200).json({'comments': result});
-    })
+    const comments = await Comment.find({ location_id: location_id}).lean().exec();
+
+    //
+    const commentsWithUsers = await Promise.all(comments.map(async (comment) => {
+        const user = await axios.get(`http://localhost:4000/user/${comment.user_id}`);
+        comment.user_id = user.data.info;
+        return comment;
+    }));
+    res.status(200).json({'comments': commentsWithUsers});
 })
 
 //=======================================================================================
@@ -820,7 +840,6 @@ router.post("/user/comment",token.jwtValidate,async (req,res)=>{
  */
 
 router.post("/user/:user_id/favorite/:location_id",token.jwtValidate,async (req,res)=>{
-    const Favorite = require('../models/Favourite')
     const user_id = req.params.user_id;
     const location_id = req.params.location_id;
 
