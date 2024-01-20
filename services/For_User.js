@@ -45,6 +45,8 @@ router.get("user/profile/:id",token,token.jwtValidate,async (req,res)=>{
         res.status(500).json({'msg':'Không tìm thấy mã ID của người dùng này.'})
     });  
 })
+
+
 //Đổi fullname
 router.put("/user/update/fullname",token.jwtValidate,async (req,res)=>{
     const {id,fullname} = req.body;
@@ -53,6 +55,7 @@ router.put("/user/update/fullname",token.jwtValidate,async (req,res)=>{
         res.status(200).json({'msg':'đổi họ tên',})
     }).catch(err =>console.log(err))
 })
+
 //Đổi Mật khẩu
 router.put("/user/update/pasword",token.jwtValidate,async (req,res)=>{
     const {id,oldPassword,newPassword} = req.body;
@@ -137,6 +140,49 @@ async function updateRatingLocation(location_id){
 
 
 //Liệt kê location
+
+/**
+ * @swagger
+ * tags: 
+ *  - name: user
+ * /locations:
+ *   get:
+ *     summary: Lấy danh sách địa điểm
+ *     description: API để lấy danh sách các địa điểm du lịch có trạng thái đang hoạt động.
+ *     tags: 
+ *      - user
+ *     responses:
+ *       200:
+ *         description: Thành công. Trả về danh sách các địa điểm du lịch.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Danh sách địa điểm"
+ *               locations:
+ *                 - _id: "1"
+ *                   name: "Địa điểm 1"
+ *                   categories: 
+ *                     _id: "category-id-1"
+ *                     name: "Danh mục 1"
+ *                   user_id: 
+ *                     _id: "user-id-1"
+ *                     name: "Người dùng 1"
+ *                 - _id: "2"
+ *                   name: "Địa điểm 2"
+ *                   categories: 
+ *                     _id: "category-id-2"
+ *                     name: "Danh mục 2"
+ *                   user_id: 
+ *                     _id: "user-id-2"
+ *                     name: "Người dùng 2"
+ *       500:
+ *         description: Lỗi - Không thể lấy danh sách địa điểm.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Internal Server Error"
+ */
+
 router.get("/locations", async (req, res) => {
     await Location.find({status: true}).populate('categories').then(async (result) => {
         console.log('=> get all location');
@@ -153,6 +199,40 @@ router.get("/locations", async (req, res) => {
 })
 
 //liệt kê location theo id
+
+/**
+ * @swagger
+ * tags: 
+ *  - name: user
+ * /location/{location_id}:
+ *   get:
+ *     summary: Lấy địa điểm theo location_id
+ *     description: API để lấy địa điểm du lịch có trạng thái đang hoạt động.
+ *     tags: 
+ *      - user
+ *     responses:
+ *       200:
+ *         description: Thành công. Trả về địa điểm du lịch.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Danh sách địa điểm"
+ *               locations:
+ *                 - _id: "1"
+ *                   user_id: "659b55d35506896338af060f"
+ *                   name: "Pizza Go Quy Nhơn"
+ *                   desc: "⏰ 10:00-22:00"
+ *                   address: "📍 Tầng 1 FLC Sea Tower Quy Nhơn"
+ *       500:
+ *         description: Lỗi - Không thể lấy danh sách địa điểm.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Internal Server Error"
+ *       404:
+ *          description: Lỗi server
+ */
+
 router.get("/location/:location_id", async (req, res) => { 
     const location_id = req.params.location_id;
     await Location.findById(location_id).populate("categories").then((location) => {
@@ -171,6 +251,56 @@ router.get("/location/:location_id", async (req, res) => {
     });
 })
 //Liệt kê thông tin người dùng  (userInfo, favouriteList, userLocation)
+
+/**
+ * @swagger
+ * /user/{id}:
+ *   get:
+ *     summary: Lấy thông tin người dùng
+ *     description: API để lấy thông tin người dùng, các địa điểm của người dùng và các địa điểm ưa thích.
+ *     tags:
+ *      - user
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID của người dùng cần lấy thông tin.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Thành công. Trả về thông tin người dùng, các địa điểm của người dùng và các địa điểm ưa thích.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Thông tin người dùng"
+ *               info:
+ *                 _id: "user-id-1"
+ *                 name: "Người dùng 1"
+ *               locations:
+ *                 - _id: "1"
+ *                   name: "Địa điểm 1"
+ *                   categories: 
+ *                     _id: "category-id-1"
+ *                     name: "Danh mục 1"
+ *               favourite_locations:
+ *                 - location_id: 
+ *                     _id: "favourite-location-id-1"
+ *                     name: "Địa điểm ưa thích 1"
+ *       404:
+ *         description: Lỗi - Không tìm thấy người dùng với ID cung cấp.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Không tìm thấy người dùng"
+ *       500:
+ *         description: Lỗi - Không thể lấy thông tin người dùng.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Internal Server Error"
+ */
+
 router.get("/user/:id", async (req, res) => {
     const user_id = req.params.id;
     //user location
@@ -191,7 +321,60 @@ router.get("/user/:id", async (req, res) => {
         favourite_locations: user_favourite
     })
 })
+
+
 //liẹt kê Location theo id người dùng
+
+/**
+ * @swagger
+ * /user/{id}/locations:
+ *   get:
+ *     summary: Lấy danh sách địa điểm của người dùng
+ *     description: API để lấy danh sách các địa điểm du lịch của người dùng dựa trên ID.
+ *     tags:
+ *      - user
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID của người dùng cần lấy danh sách địa điểm.
+ *         schema:
+ *           type: string
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Thành công. Trả về danh sách các địa điểm du lịch của người dùng.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Danh sách nơi du lịch của tôi"
+ *               locations:
+ *                 - _id: "1"
+ *                   name: "Địa điểm 1"
+ *                   categories: 
+ *                     _id: "category-id-1"
+ *                     name: "Danh mục 1"
+ *                 - _id: "2"
+ *                   name: "Địa điểm 2"
+ *                   categories: 
+ *                     _id: "category-id-2"
+ *                     name: "Danh mục 2"
+ *       400:
+ *         description: Lỗi - Không tìm thấy người dùng với ID cung cấp.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Không tìm thấy ID này!"
+ *       500:
+ *         description: Lỗi - Không thể lấy danh sách địa điểm của người dùng.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Internal Server Error"
+ */
+
+
 router.get("/user/:id/locations",token.jwtValidate,async (req,res)=>{ 
     const id = req.params.id;
     const Location = require('../models/Location');
@@ -208,6 +391,50 @@ router.get("/user/:id/locations",token.jwtValidate,async (req,res)=>{
 })
 
 //liệt kê Location theo User ID yêu thích
+
+/**
+ * @swagger
+ * /user/{id}/favourite:
+ *   get:
+ *     summary: Lấy danh sách địa điểm ưa thích của người dùng
+ *     description: API để lấy danh sách các địa điểm du lịch ưa thích của người dùng dựa trên ID.
+ *     tags: 
+ *       - user
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID của người dùng cần lấy danh sách địa điểm ưa thích.
+ *         schema:
+ *           type: string
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Thành công. Trả về danh sách các địa điểm du lịch ưa thích của người dùng.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Danh sách yêu thích của tôi:"
+ *               locations:
+ *                 - _id: "favourite-location-id-1"
+ *                   name: "Địa điểm ưa thích 1"
+ *                 - _id: "favourite-location-id-2"
+ *                   name: "Địa điểm ưa thích 2"
+ *       400:
+ *         description: Lỗi - Không tìm thấy người dùng với ID cung cấp.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Không tìm thấy ID này!"
+ *       500:
+ *         description: Lỗi - Không thể lấy danh sách địa điểm ưa thích của người dùng.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Internal Server Error"
+ */
+
 router.get("/user/:id/favourite",token.jwtValidate,async (req,res)=>{ 
     const id = req.params.id;
     const Favorite = require('../models/Favourite')
@@ -226,6 +453,89 @@ router.get("/user/:id/favourite",token.jwtValidate,async (req,res)=>{
 })
 
 // người dùng Upload location
+
+/**
+ * @swagger
+ * /user/upload:
+ *   post:
+ *     summary: Tải lên nơi du lịch
+ *     description: API để người dùng tải lên thông tin về một địa điểm du lịch mới.
+ *     tags:
+ *      - user  
+ *     parameters:
+ *       - in: header
+ *         name: Authorization
+ *         required: true
+ *         description: Bearer token để xác thực người dùng.
+ *         schema:
+ *           type: string
+ *       - in: formData
+ *         name: user_id
+ *         required: true
+ *         description: ID của người dùng tạo địa điểm du lịch.
+ *         type: string
+ *       - in: formData
+ *         name: name
+ *         required: true
+ *         description: Tên địa điểm du lịch.
+ *         type: string
+ *       - in: formData
+ *         name: desc
+ *         required: true
+ *         description: Mô tả về địa điểm du lịch.
+ *         type: string
+ *       - in: formData
+ *         name: address
+ *         required: true
+ *         description: Địa chỉ của địa điểm du lịch.
+ *         type: string
+ *       - in: formData
+ *         name: latitude
+ *         required: true
+ *         description: Vĩ độ của địa điểm du lịch.
+ *         type: number
+ *       - in: formData
+ *         name: longitude
+ *         required: true
+ *         description: Kinh độ của địa điểm du lịch.
+ *         type: number
+ *       - in: formData
+ *         name: categories
+ *         required: true
+ *         description: Danh mục của địa điểm du lịch (dạng chuỗi JSON).
+ *         type: string
+ *       - in: formData
+ *         name: images
+ *         required: true
+ *         description: Hình ảnh địa điểm du lịch (dạng file).
+ *         type: file
+ *         format: binary
+ *         isArray: true
+ *     responses:
+ *       200:
+ *         description: Thành công. Trả về thông tin về địa điểm du lịch mới.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Thêm nơi du lịch thành công"
+ *               result:
+ *                 _id: "1"
+ *                 name: "Địa điểm 1"
+ *                 desc: "Mô tả về Địa điểm 1"
+ *       400:
+ *         description: Lỗi - Không tìm thấy người dùng với ID cung cấp hoặc các thông tin không hợp lệ.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Không tìm thấy ID này!"
+ *       500:
+ *         description: Lỗi - Không thể lưu địa điểm du lịch.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Internal Server Error"
+ */
+
 router.post("/user/upload",token.jwtValidate,upload.array('images',6),async (req,res)=>{
     const Location = require('../models/Location');
     const {user_id,name,desc,address,latitude,longitude,categories } = req.body
@@ -258,7 +568,60 @@ router.post("/user/upload",token.jwtValidate,upload.array('images',6),async (req
     })
 })
 
+
+
+
 //Tìm kiếm location
+
+/**
+ * @swagger
+ * /location:
+ *   post:
+ *     summary: Tìm kiếm địa điểm
+ *     description: API để tìm kiếm địa điểm dựa trên từ khóa.
+ *     tags: 
+ *      - user
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               key:
+ *                 type: string
+ *                 description: Từ khóa tìm kiếm địa điểm.
+ *     responses:
+ *       200:
+ *         description: Thành công. Trả về danh sách địa điểm phù hợp với từ khóa.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Tìm location"
+ *               locations:
+ *                 - _id: "1"
+ *                   name: "Địa điểm 1"
+ *                   categories: 
+ *                     _id: "category-id-1"
+ *                     name: "Danh mục 1"
+ *                   user_id: 
+ *                     _id: "user-id-1"
+ *                     name: "Người dùng 1"
+ *                 - _id: "2"
+ *                   name: "Địa điểm 2"
+ *                   categories: 
+ *                     _id: "category-id-2"
+ *                     name: "Danh mục 2"
+ *                   user_id: 
+ *                     _id: "user-id-2"
+ *                     name: "Người dùng 2"
+ *       500:
+ *         description: Lỗi - Không thể tìm kiếm địa điểm.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Internal Server Error"
+ */
+
 router.post("/location",(req,res)=>{
     const Location = require('../models/Location');
     const Category = require('../models/Category');
@@ -277,6 +640,47 @@ router.post("/location",(req,res)=>{
 
 
 //Lấy danh sách comment theo location_id
+
+/**
+ * @swagger
+ * /comments/{location_id}:
+ *   get:
+ *     summary: Lấy tất cả bình luận của một địa điểm
+ *     description: API để lấy danh sách tất cả các bình luận của một địa điểm dựa trên ID địa điểm.
+ *     tags: 
+ *      - user
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID của địa điểm cần lấy bình luận.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Thành công. Trả về danh sách tất cả các bình luận của địa điểm.
+ *         content:
+ *           application/json:
+ *             example:
+ *               comments:
+ *                 - _id: "comment-id-1"
+ *                   message: "Bình luận 1"
+ *                   user_id: 
+ *                     _id: "user-id-1"
+ *                     name: "Người dùng 1"
+ *                 - _id: "comment-id-2"
+ *                   message: "Bình luận 2"
+ *                   user_id: 
+ *                     _id: "user-id-2"
+ *                     name: "Người dùng 2"
+ *       500:
+ *         description: Lỗi - Không thể lấy danh sách bình luận.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Internal Server Error"
+ */
+
 router.get("/comments/:id", async (req, res) => { 
     const Comment = require('../models/Comment');
     const User = require('../models/User');
@@ -299,6 +703,50 @@ router.get("/comments/:id", async (req, res) => {
 // Start API user comment , Favorite                                                              
 //=======================================================================================
 //người dùng dánh giá và comment
+
+/**
+ * @swagger
+ * /user/comment:
+ *   post:
+ *     summary: Thêm hoặc cập nhật bình luận của người dùng
+ *     description: API để người dùng thêm hoặc cập nhật bình luận của mình cho một địa điểm du lịch.
+ *     tags: 
+ *      - user
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               user_id:
+ *                 type: string
+ *                 description: ID của người dùng.
+ *               location_id:
+ *                 type: string
+ *                 description: ID của địa điểm du lịch.
+ *               message:
+ *                 type: string
+ *                 description: Nội dung bình luận.
+ *               rating:
+ *                 type: number
+ *                 description: Đánh giá cho địa điểm (1-5).
+ *     responses:
+ *       200:
+ *         description: Thành công. Trả về thông báo về việc thêm hoặc cập nhật bình luận.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Sửa comment"
+ *       500:
+ *         description: Lỗi - Không thể thêm hoặc cập nhật bình luận.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Internal Server Error"
+ */
+
 router.post("/user/comment",token.jwtValidate,async (req,res)=>{
     const Comment = require('../models/Comment');
     const {user_id, location_id, message, rating} = req.body
@@ -332,6 +780,45 @@ router.post("/user/comment",token.jwtValidate,async (req,res)=>{
 })
 
 //favorite , unfavorite
+
+/**
+ * @swagger
+ * /user/{user_id}/favorite/{location_id}:
+ *   post:
+ *     summary: Thêm hoặc xóa địa điểm khỏi danh sách yêu thích
+ *     description: API để người dùng thêm hoặc xóa địa điểm khỏi danh sách yêu thích của mình.
+ *     tags:
+ *      - user
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: user_id
+ *         required: true
+ *         description: ID của người dùng.
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: location_id
+ *         required: true
+ *         description: ID của địa điểm du lịch.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       201:
+ *         description: Thành công. Trả về thông báo về việc thêm hoặc xóa địa điểm khỏi danh sách yêu thích.
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "Đã thêm địa điểm vào danh sách yêu thích"
+ *       500:
+ *         description: Lỗi - Không thể thêm hoặc xóa địa điểm khỏi danh sách yêu thích.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Internal Server Error"
+ */
+
 router.post("/user/:user_id/favorite/:location_id",token.jwtValidate,async (req,res)=>{
     const Favorite = require('../models/Favourite')
     const user_id = req.params.user_id;

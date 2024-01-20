@@ -43,22 +43,44 @@ const upload = multer({
  */
 
 
+
+
+/**
+ * @swagger
+ * tags: 
+ *  - name: admin-users
+ *    description: Quản lý người dùng
+ * /auth/users:
+ *   get:
+ *     summary: Lấy danh sách tất cả người dùng
+ *     description: API để lấy danh sách tất cả người dùng trong hệ thống.
+ *     tags:
+ *      - admin-users
+ *     responses:
+ *       200:
+ *         description: Thành công. Trả về danh sách tất cả người dùng.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Tất cả người dùng"
+ *               users:
+ *                 - _id: "user-id-1"
+ *                   name: "Người dùng 1"
+ *                 - _id: "user-id-2"
+ *                   name: "Người dùng 2"
+ *       500:
+ *         description: Lỗi - Không thể lấy danh sách người dùng.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Internal Server Error"
+ */
+
+
 router.get("/auth/users",async (req,res)=>{
     const User = require('../models/User');
     try{
         await User.find().then(async (User)=>{
-            // var data = [];
-            // for (const item of User){
-            //     const file = fs.readFileSync(`./imgUpload/avatar/${item.Avatar}`);
-            //     data.push({
-            //         '_id':item._id,
-            //         'Fullname':item.Fullname,
-            //         'Email':item.Email,
-            //         'Avatar':item.Avatar,
-            //         'Role':item.Role,
-            //         'File':file
-            //     })
-            // }
             console.log('=> admin get all user');
             res.status(200).json({msg:'tất cả User',users:User});
         }).catch(() =>{
@@ -70,9 +92,45 @@ router.get("/auth/users",async (req,res)=>{
     }
 })
 
-router.post("/auth/user/id",async (req,res)=>{
+
+
+/**
+ * @swagger
+ * /auth/user/{id}:
+ *   get:
+ *     summary: Lấy thông tin người dùng bằng ID
+ *     description: API để lấy thông tin của người dùng dựa trên ID người dùng.
+ *     tags:
+ *      - admin-users
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID của người dùng cần lấy thông tin.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Thành công. Trả về thông tin người dùng theo ID.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Tìm người dùng bằng ID"
+ *               user:
+ *                 _id: "user-id-1"
+ *                 name: "Người dùng 1"
+ *       500:
+ *         description: Lỗi - Không thể lấy thông tin người dùng.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Internal Server Error"
+ */
+
+
+router.get("/auth/user/:id",async (req,res)=>{
     const User = require('../models/User');
-    const id = req.body.id
+    const id = req.params.id
     try{
         await User.findById(id).then(User=>{
             console.log('=> admin find user by id');
@@ -86,7 +144,43 @@ router.post("/auth/user/id",async (req,res)=>{
     }
 })
 
-router.post("/auth/user/email",async (req,res)=>{
+
+/**
+ * @swagger
+ * /auth/user/email:
+ *   get:
+ *     summary: Tìm người dùng bằng Email
+ *     description: API để tìm người dùng dựa trên địa chỉ email.
+ *     tags: 
+ *      - admin-users
+ *     parameters:
+ *       - in: query
+ *         name: email
+ *         required: true
+ *         description: Địa chỉ email của người dùng cần tìm.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Thành công. Trả về thông tin người dùng theo email.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Tìm người dùng bằng Email"
+ *               user:
+ *                 _id: "user-id-1"
+ *                 name: "Người dùng 1"
+ *                 email: "user1@example.com"
+ *       500:
+ *         description: Lỗi - Không tìm thấy người dùng với địa chỉ email đã cho.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Internal Server Error"
+ */
+
+
+router.get("/auth/user/email",async (req,res)=>{
     const User = require('../models/User');
     const email = req.body.email
     try{
@@ -104,10 +198,43 @@ router.post("/auth/user/email",async (req,res)=>{
     }
 })
 
-router.delete("/auth/user",async (req,res)=>{
+/**
+ * @swagger
+ * /auth/user/{user_id}:
+ *   delete:
+ *     summary: Xóa người dùng
+ *     description: API để xóa người dùng dựa trên ID.
+ *     tags: 
+ *      - admin-users
+ *     parameters:
+ *       - in: path
+ *         name: user_id
+ *         required: true
+ *         description: ID của người dùng cần xóa.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Thành công. Người dùng đã được xóa.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Đã xóa người dùng ID: user-id-1"
+ *       500:
+ *         description: Lỗi - Không tìm thấy người dùng với ID đã cho.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Internal Server Error"
+ */
+
+
+
+
+router.delete("/auth/user/:user_id",async (req,res)=>{
     const User = require('../models/User');
     const Authentication = require('../models/Authentication');
-    const id = req.body.id
+    const id = req.params.user_id;
     try{
         await User.findByIdAndDelete(id).then(async User=>{
             if(User){

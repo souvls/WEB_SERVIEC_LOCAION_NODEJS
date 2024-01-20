@@ -4,6 +4,9 @@ const User = require('../models/User');
 const fs = require('fs');
 const path = require('path');
 const Location = require('../models/Location')
+
+
+
 /**
  * @swagger
  * components:
@@ -62,6 +65,31 @@ const Location = require('../models/Location')
 //=======================================================================================
 // Start API Category For Admin                                                               
 //=======================================================================================
+/**
+ * @swagger
+ * tags:
+ *   - name: admin-categories
+ *     description: Quản lý danh mục địa điểm
+ *
+ * /auth/categories:
+ *   get:
+ *     summary: Lấy danh sách loại hình du lịch
+ *     description: API để lấy danh sách các loại hình du lịch từ server.
+ *     tags:
+ *       - admin-categories
+ *     responses:
+ *       200:
+ *         description: Thành công. Trả về danh sách các loại hình du lịch.
+ *         content:
+ *           application/json:
+ *             example:
+ *               customMessage: "Danh sách loại hình du lịch"
+ *               categories:
+ *                 - _id: "1"
+ *                   name: "Du lịch biển"
+ *                 - _id: "2"
+ *                   name: "Du lịch núi"
+ */
 router.get("/auth/categories",async (req,res)=>{ //Liêt kê danh sách địa điểm du lịch
     const Category = require('../models/Category');
     await Category.find().then((result)=>{
@@ -69,6 +97,44 @@ router.get("/auth/categories",async (req,res)=>{ //Liêt kê danh sách địa �
         res.status(200).json({'msg':'Danh sách loại hình du lịch','categories':result})
     })
 })
+
+
+/**
+ * @swagger
+ * /auth/category:
+
+ *   post:
+ *     summary: Thêm loại địa điểm du lịch mới
+ *     description: API để thêm một loại hình du lịch mới vào hệ thống.
+ *     tags: 
+ *      - admin-categories
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: Tên của loại hình du lịch mới.
+ *     responses:
+ *       200:
+ *         description: Thêm loại hình du lịch thành công.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Thêm loại hình du lịch thành công"
+ *               category:
+ *                 _id: "1"
+ *                 name: "Du lịch biển"
+ *       400:
+ *         description: Lỗi - loại hình du lịch đã tồn tại.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Loại hình du lịch này đã tồn tại"
+ */
 
 router.post("/auth/category",async (req,res)=>{ //thêm loại địa điểm du lịch mới
     const Category = require('../models/Category');
@@ -92,6 +158,37 @@ router.post("/auth/category",async (req,res)=>{ //thêm loại địa điểm du
     })
 })
 
+
+
+/**
+ * @swagger
+ * /auth/category/{category_id}:
+ *   delete:
+ *     summary: Xóa loại địa điểm du lịch
+ *     description: API để xóa một loại hình du lịch dựa trên ID.
+ *     tags:
+ *      - admin-categories
+ *     parameters:
+ *       - in: path
+ *         name: category_id
+ *         required: true
+ *         description: ID của loại hình du lịch cần xóa.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Xóa loại hình du lịch thành công.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Đã xóa loại hình du lịch, id: 123"
+ *       400:
+ *         description: Lỗi - Không tìm thấy loại hình du lịch với ID cung cấp.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Không tìn thấy, id: 123"
+ */
 router.delete("/auth/category/:category_id",async (req,res)=>{ //xóa loại địa điểm du lịch
     const Category = require('../models/Category');
     const id = req.params.category_id;
@@ -100,7 +197,7 @@ router.delete("/auth/category/:category_id",async (req,res)=>{ //xóa loại đ�
         console.log('=> admin, delete category id:'+id);
         res.status(200).json({'msg':'đã xóa loại hình du lịch, id: '+id })
     }).catch(err=>{
-        res.status(400).json({'msg':'Không tìn thấy, id: '+id })
+        res.status(400).json({'msg':'Không tìm thấy, id: '+id })
     })
 })
 //=======================================================================================
@@ -112,7 +209,41 @@ router.delete("/auth/category/:category_id",async (req,res)=>{ //xóa loại đ�
 // Start API Location For Admin                                                              
 //=======================================================================================
 
-//duyệt 
+
+//duyệt
+
+
+/**
+ * @swagger
+ * /auth/allow/location/{location_id}:
+ *   put:
+ *     summary: Cập nhật trạng thái địa điểm du lịch
+ *     description: API để cập nhật trạng thái của một địa điểm du lịch dựa trên ID.
+ *     tags:
+ *      - admin-locations
+ *     parameters:
+ *       - in: path
+ *         name: location_id
+ *         required: true
+ *         description: ID của địa điểm du lịch cần cập nhật trạng thái.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Cập nhật trạng thái thành công.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Cập nhật status thành công"
+ *       400:
+ *         description: Lỗi - Không tìm thấy địa điểm du lịch với ID cung cấp hoặc không thể cập nhật trạng thái.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: 'Không tìm thấy địa điểm'
+ */
+
+
 router.put("/auth/allow/location/:location_id",async (req,res)=>{
     const id = req.params.location_id;
     const Location = require('../models/Location');
@@ -131,6 +262,46 @@ router.put("/auth/allow/location/:location_id",async (req,res)=>{
     }
 })
 //lấy danh sách điểm du lịch
+
+
+
+/**
+ * @swagger
+ * tags: 
+ *  - name: admin-locations
+ *    description: Quản lý địa điểm
+ * /auth/locations:
+ *   get:
+ *     summary: Lấy danh sách điểm du lịch
+ *     description: API để lấy danh sách các điểm du lịch từ server.
+ *     tags: 
+ *        - admin-locations
+ *     responses:
+ *       200:
+ *         description: Thành công. Trả về danh sách các điểm du lịch.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Danh sách nơi du lịch"
+ *               locations:
+ *                 - _id: "1"
+ *                   name: "Địa điểm 1"
+ *                   user_id: 
+ *                     _id: "user-id-1"
+ *                     name: "Người dùng 1"
+ *                 - _id: "2"
+ *                   name: "Địa điểm 2"
+ *                   user_id: 
+ *                     _id: "user-id-2"
+ *                     name: "Người dùng 2"
+ *       500:
+ *         description: Lỗi - Không thể lấy danh sách điểm du lịch.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Internal Server Error"
+ */
+
 router.get("/auth/locations",async (req,res)=>{ //lấy danh sách điểm du lịch
     const Location = require('../models/Location');
     const Category = require('../models/Category');
@@ -148,6 +319,49 @@ router.get("/auth/locations",async (req,res)=>{ //lấy danh sách điểm du l�
     })
 })
 
+/**
+ * @swagger
+ * /auth/location/{id}:
+ *   get:
+ *     summary: Tìm điểm du lịch theo ID
+ *     description: API để tìm một điểm du lịch dựa trên ID.
+ *     tags: 
+ *       - admin-locations
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID của điểm du lịch cần tìm.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Thành công. Trả về thông tin của điểm du lịch.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Tìm Location bằng ID"
+ *               Location:
+ *                 _id: "1"
+ *                 name: "Địa điểm 1"
+ *                 category_id: 
+ *                   _id: "category-id-1"
+ *                   name: "Danh mục 1"
+ *       404:
+ *         description: Lỗi - Không tìm thấy điểm du lịch với ID cung cấp.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Không tìm thấy Location"
+ *       500:
+ *         description: Lỗi - Không thể tìm điểm du lịch.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Internal Server Error"
+ */
+
+
 router.get("/auth/location/:id",async (req,res)=>{ //Tìm điểm du lịch theo ID
     const Location = require('../models/Location');
     const Category = require('../models/Category');
@@ -160,6 +374,43 @@ router.get("/auth/location/:id",async (req,res)=>{ //Tìm điểm du lịch theo
         console.log(err);
     })
 })
+
+
+/**
+ * @swagger
+ * /auth/location/{location_id}:
+ *   delete:
+ *     summary: Xóa địa điểm du lịch
+ *     description: API để xóa một địa điểm du lịch dựa trên ID.
+ *     tags:
+ *      - admin-locations
+ *     parameters:
+ *       - in: path
+ *         name: location_id
+ *         required: true
+ *         description: ID của địa điểm du lịch cần xóa.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Xóa địa điểm du lịch thành công.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Xóa thành công địa điểm du lịch với ID: 123"
+ *       404:
+ *         description: Lỗi - Không tìm thấy địa điểm du lịch với ID cung cấp.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Không tìm thấy địa điểm du lịch với ID: 123"
+ *       500:
+ *         description: Lỗi - Không thể xóa địa điểm du lịch.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: "Lỗi server khi xóa địa điểm du lịch"
+ */
 
 router.delete("/auth/location/:location_id",async (req,res)=>{ //Xóa địa điểm du lịch
     try {

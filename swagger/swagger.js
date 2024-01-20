@@ -16,7 +16,8 @@ const options = {
   },
   apis: ['./services/Admin_Service_Location.js', 
           './services/Admin_Service_User.js',
-          './services/Admin_Service_Comment.js'
+          './services/Admin_Service_Comment.js',
+          './services/For_User.js', './services/Authentication.js',
 ]
 };
 const swaggerSpec = swaggerJsdoc(options)
