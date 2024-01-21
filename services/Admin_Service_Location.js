@@ -73,12 +73,12 @@ const Location = require('../models/Location')
  *
  * /auth/categories:
  *   get:
+ *     security:
+ *       - BearerAuth: []
  *     summary: Lấy danh sách loại hình du lịch
  *     description: API để lấy danh sách các loại hình du lịch từ server.
  *     tags:
  *       - admin-categories
- *     security:
- *       - BearerAuth: []
  *     responses:
  *       200:
  *         description: Thành công. Trả về danh sách các loại hình du lịch.
@@ -248,7 +248,6 @@ router.delete("/auth/category/:category_id",async (req,res)=>{ //xóa loại đ�
 
 router.put("/auth/allow/location/:location_id",async (req,res)=>{
     const id = req.params.location_id;
-    const Location = require('../models/Location');
 
     try {
         const location = await Location.findById(id);

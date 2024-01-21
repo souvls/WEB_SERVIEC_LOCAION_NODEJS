@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
+const Comment = require('../models/Comment');
 
 /**
  * @swagger
@@ -27,15 +27,64 @@ const router = express.Router();
  *           type: boolean
  *           description: Tình trạng bình luận (duyệt/chưa)
  */ 
-router.delete("auth/comments",async (req,res)=>{
-    const Comemnt = require('../models/Comment');
-    console.log('shjhsfj');
-    // await Comemnt.findByIdAndDelete(id).then(()=>{
-    //     console.log('=> admin delete coment');
-    //     res.status(500).json({'msg':'Xóa commemnt thành công.'})
-    // }).catch((err)=>{
-    //     console.log(err);
-    // })
 
+
+
+
+/**
+ * @swagger
+ *   tags:
+ *      - name: admin-comments
+ *        description: Quản lý đánh giá
+ * /auth/comment/{id}:
+ *   delete:
+ *     summary: Xóa đánh giá bằng ID
+ *     tags:
+ *       - admin-comments
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID của đánh giá cần xóa
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Đánh giá đã được xóa thành công
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: Xóa thành công đánh giá
+ *       404:
+ *         description: Không tìm thấy đánh giá với ID cung cấp
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: Lỗi khi xóa comment
+ *       500:
+ *         description: Lỗi server
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: Lỗi server
+ */
+router.delete("/auth/comment/:id",async (req,res)=>{
+    const id = req.params.id;
+    try{
+        const result = await Comment.findByIdAndDelete(id)
+        if(!result){
+            return res.status(404).json({
+                msg: 'Lỗi khi xóa comment'
+            })
+        }
+        res.status(200).json({
+            msg: `Xóa thành công đánh giá ID: ${id}`
+        })
+    } catch(error){
+        console.log(error);
+        res.status(500).json({
+            msg: 'Lỗi server'
+        })
+    }
 });
 module.exports = router;

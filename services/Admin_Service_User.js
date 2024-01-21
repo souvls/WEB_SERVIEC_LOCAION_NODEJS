@@ -50,30 +50,34 @@ const upload = multer({
  * tags: 
  *  - name: admin-users
  *    description: Quản lý người dùng
- * /auth/users:
+  * /auth/users:
  *   get:
- *     summary: Lấy danh sách tất cả người dùng
- *     description: API để lấy danh sách tất cả người dùng trong hệ thống.
+ *     summary: Lấy danh sách tất cả người dùng.
+ *     description: API cho admin để lấy danh sách tất cả người dùng.
  *     tags:
- *      - admin-users
+ *         - admin-users
+ *     parameters:
+ *       - in: header
+ *         name: Authorization
+ *         description: Mã accessToken (Bearer Token)
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: Bearer <accessToken>
  *     responses:
  *       200:
- *         description: Thành công. Trả về danh sách tất cả người dùng.
+ *         description: Danh sách người dùng.
  *         content:
  *           application/json:
  *             example:
- *               msg: "Tất cả người dùng"
- *               users:
- *                 - _id: "user-id-1"
- *                   name: "Người dùng 1"
- *                 - _id: "user-id-2"
- *                   name: "Người dùng 2"
+ *               msg: 'tất cả User'
+ *               users: []
  *       500:
- *         description: Lỗi - Không thể lấy danh sách người dùng.
+ *         description: Lỗi server hoặc không có người dùng trong database.
  *         content:
  *           application/json:
  *             example:
- *               msg: "Internal Server Error"
+ *               msg: 'Chưa có người dùng trong database'
  */
 
 

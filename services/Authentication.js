@@ -1,6 +1,43 @@
 const express = require('express');
 const router = express.Router();
 
+
+/**
+* @swagger
+* components:
+*    parameters:
+*       AccessToken:
+*       name: "x-access-token"
+*       in: header
+*        description: Access Token.
+*       required: true
+*       schema:
+*           type: string
+*/
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Authentication:
+ *       type: object
+ *       required:
+ *         - user_id
+ *         - refresh_token
+ *       properties:
+ *         user_id:
+ *           type: string
+ *           description: ID của người dùng liên quan đến refresh token
+ *         refresh_token:
+ *           type: string
+ *           description: Refresh token được sử dụng để làm mới Access Token
+ *       example:
+ *         user_id: 5fec51a17df4f12e3c27a562
+ *         refresh_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ */
+
+
+
 router.get("/login",(req,res)=>{
     console.log('get.login');
 })

@@ -12,7 +12,7 @@ const Authentication_Service = require('./services/Authentication');
 //admin
 const Admin_Service_Location = require('./services/Admin_Service_Location');
 const Admin_Service_User = require('./services/Admin_Service_User');
-//const Admin_Service_Comment = require('./services/Admin_Serviec_Comment');
+const Admin_Service_Comment = require('./services/Admin_Service_Comment');
 
 
 const { swaggerUI, swaggerSpec } = require('./swagger/swagger');
@@ -38,6 +38,7 @@ app.use(Service_for_User);
 const isAdmin = require('./middleware/check_admin');
 app.use(token.jwtValidate,isAdmin,Admin_Service_Location);
 app.use(token.jwtValidate,isAdmin,Admin_Service_User);
+app.use(token.jwtValidate,isAdmin,Admin_Service_Comment);
 //app.use(Admin_Service_Comment);
 
 
